@@ -127,10 +127,10 @@
   .shop-item{
     display:flex;justify-content:space-between;align-items:center;
     background:#1a2440;padding:14px;border-radius:14px;margin-bottom:10px;
-    border:1px solid #2e3e6b;text-align:left;
+    border:1px solid #2e3e6b;text-align:left;gap:8px;
   }
   .buy-btn{
-    background:#28a745;color:#fff;border:0;padding:10px 16px;
+    background:#28a745;color:#fff;border:0;padding:10px 14px;
     border-radius:10px;font-weight:bold;cursor:pointer;
   }
   input{
@@ -285,8 +285,50 @@
 </div>
 
 <script>
-// Google Apps Script Webhook URL
+// 1. Google Apps Script Webhook URL (Orders & Commissions Sheet Ledger)
 const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwK8Gf3EbG2diusY9xiyHLRAdDd2JUtJY2dooQveCK9Y8F1N64WSz-dOeQ0LBoAq99HKw/exec";
+
+// 2. Firebase Realtime Database URL
+const FIREBASE_DB_URL = "https://coinbattlepro-41b9d-default-rtdb.firebaseio.com";
+
+function hasFirebase(){
+  return FIREBASE_DB_URL && !FIREBASE_DB_URL.includes("YOUR_FIREBASE_DATABASE_URL");
+}
+
+function makePlayerKey(phone){
+  return "p_" + String(phone || "").replace(/[^0-9]/g, "");
+}
+
+async function dbGet(path){
+  if(!hasFirebase()) return null;
+  const res = await fetch(`${FIREBASE_DB_URL}/${path}.json`);
+  return await res.json();
+}
+
+async function dbPut(path, data){
+  if(!hasFirebase()) return null;
+  const res = await fetch(`${FIREBASE_DB_URL}/${path}.json`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+  return await res.json();
+}
+
+async function dbPost(path, data){
+  if(!hasFirebase()) return null;
+  const res = await fetch(`${FIREBASE_DB_URL}/${path}.json`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+  return await res.json();
+}
+
+async function dbDelete(path){
+  if(!hasFirebase()) return null;
+  await fetch(`${FIREBASE_DB_URL}/${path}.json`, { method: "DELETE" });
+}
 
 function sendToSheet(payload){
   if(!WEBHOOK_URL) return;
@@ -325,10 +367,10 @@ function soundLoss(){
   playTone(220,'sawtooth',0.35,200);
 }
 
-// App State (Saved in Browser)
+// App State
 let state = JSON.parse(localStorage.getItem('coinBattlePro')) || {
   user: null,
-  balance: 0, // Zero free coins!
+  balance: 0,
   adminCommission: 0,
   orders: [],
   history: ['H','T','H','H','T']
@@ -352,15 +394,64 @@ function saveState(){
   updateUI();
 }
 
-function registerUser(){
+async function syncLiveData(){
+  if(!hasFirebase()) return;
+  try {
+    if(state.user && state.user.phone){
+      const key = makePlayerKey(state.user.phone);
+      const pData = await dbGet(`players/${key}`);
+      if(pData && typeof pData.balance === "number"){
+        state.balance = pData.balance;
+      }
+    }
+
+    const commData = await dbGet("admin/commission");
+    if(typeof commData === "number"){
+      state.adminCommission = commData;
+    }
+
+    const ordersObj = await dbGet("orders");
+    const parsedOrders = [];
+    if(ordersObj && typeof ordersObj === "object"){
+      for(const [id, item] of Object.entries(ordersObj)){
+        if(item && item.status === "Pending"){
+          parsedOrders.push({ id, ...item });
+        }
+      }
+    }
+    state.orders = parsedOrders;
+    saveState();
+  } catch(e){
+    console.error("Live sync error:", e);
+  }
+}
+
+async function registerUser(){
   const name = document.getElementById('playerNameInput').value.trim();
   const phone = document.getElementById('playerPhoneInput').value.trim();
   if(!name || phone.length < 10){
     alert("Please enter valid name and mobile number!");
     return;
   }
-  state.user = {name, phone};
+
+  const key = makePlayerKey(phone);
+  let existing = hasFirebase() ? await dbGet(`players/${key}`) : null;
+
+  const initialBalance = (existing && typeof existing.balance === "number") ? existing.balance : 0;
+  state.user = { name, phone, key };
+  state.balance = initialBalance;
+
+  if(hasFirebase()){
+    await dbPut(`players/${key}`, {
+      name,
+      phone,
+      balance: initialBalance,
+      updatedAt: Date.now()
+    });
+  }
+
   saveState();
+  await syncLiveData();
 }
 
 function updateUI(){
@@ -392,7 +483,7 @@ function updateUI(){
       <div class="shop-item">
         <div>
           <b>${o.user}</b> wants <b>${o.coins} Coins</b> (Rs.${o.rs})<br>
-          <small>Trx ID: ${o.trx}</small>
+          <small>Phone: ${o.phone || "-"} | Trx ID: ${o.trx}</small>
         </div>
         <button class="buy-btn" onclick="approveOrder(${idx})">Approve</button>
       </div>
@@ -405,6 +496,7 @@ function switchTab(tab){
     document.getElementById('section'+t.charAt(0).toUpperCase()+t.slice(1)).classList.toggle('hidden', t!==tab);
     document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1)).classList.toggle('active', t===tab);
   });
+  syncLiveData();
 }
 
 function setBet(amount, btn){
@@ -439,14 +531,16 @@ function startMatch(){
   document.getElementById('status').innerText = "🔍 Matching with real player...";
   document.getElementById('opNameDisplay').innerText = "Searching...";
 
-  setTimeout(()=>{
+  setTimeout(async ()=>{
     const op = opponents[Math.floor(Math.random()*opponents.length)];
     document.getElementById('opNameDisplay').innerText = op.name;
     document.getElementById('opAvatar').innerText = op.avatar;
     document.getElementById('status').innerText = `⚔️ Matched with ${op.name}! Flipping...`;
 
-    // Deduct Entry Fee
     state.balance -= currentBet;
+    if(hasFirebase() && state.user && state.user.phone){
+      await dbPut(`players/${makePlayerKey(state.user.phone)}/balance`, state.balance);
+    }
     saveState();
 
     const coin = document.getElementById('coin3d');
@@ -457,12 +551,11 @@ function startMatch(){
     coin.classList.add(result === 'HEADS' ? 'anim-heads' : 'anim-tails');
     soundFlip();
 
-    setTimeout(()=>{
+    setTimeout(async ()=>{
       const pot = currentBet * 2;
       const commission = Math.floor(pot * 0.20);
       const winnerPrize = pot - commission;
 
-      // Admin always gets 20% commission
       state.adminCommission += commission;
       state.history.unshift(result === 'HEADS' ? 'H' : 'T');
       if(state.history.length > 10) state.history.pop();
@@ -475,6 +568,13 @@ function startMatch(){
       } else {
         soundLoss();
         document.getElementById('status').innerText = `❌ ${result}! ${op.name} Won!`;
+      }
+
+      if(hasFirebase()){
+        if(state.user && state.user.phone){
+          await dbPut(`players/${makePlayerKey(state.user.phone)}/balance`, state.balance);
+        }
+        await dbPut("admin/commission", state.adminCommission);
       }
 
       sendToSheet({
@@ -502,7 +602,7 @@ function openOrder(coins, rs){
   document.getElementById('selectedPackText').innerText = `Selected: ${coins} Coins (Pay Rs. ${rs})`;
 }
 
-function submitOrder(){
+async function submitOrder(){
   const trx = document.getElementById('trxInput').value.trim();
   if(!trx){
     alert("Please enter Transaction ID!");
@@ -510,13 +610,25 @@ function submitOrder(){
   }
   const userName = state.user ? state.user.name : "Player";
   const userPhone = state.user ? state.user.phone : "";
+  const playerKey = makePlayerKey(userPhone);
 
-  state.orders.push({
+  const orderPayload = {
     user: userName,
+    phone: userPhone,
+    playerKey: playerKey,
     coins: pendingPack.coins,
     rs: pendingPack.rs,
-    trx: trx
-  });
+    trx: trx,
+    status: "Pending",
+    createdAt: Date.now()
+  };
+
+  if(hasFirebase()){
+    const created = await dbPost("orders", orderPayload);
+    state.orders.push({ id: created && created.name ? created.name : String(Date.now()), ...orderPayload });
+  } else {
+    state.orders.push({ id: String(Date.now()), ...orderPayload });
+  }
 
   sendToSheet({
     type: "order",
@@ -530,19 +642,40 @@ function submitOrder(){
   document.getElementById('trxInput').value = '';
   document.getElementById('orderForm').classList.add('hidden');
   saveState();
-  alert("Request submitted! Order sent to Google Sheet & ADMIN tab.");
+  alert("Request submitted! Order sent to Google Sheet, Firebase & ADMIN tab.");
 }
 
-function approveOrder(index){
+async function approveOrder(index){
   const order = state.orders[index];
-  state.balance += order.coins;
+  if(!order) return;
+
+  const targetKey = order.playerKey || (state.user && makePlayerKey(state.user.phone));
+  let currentTargetBalance = state.balance;
+
+  if(hasFirebase() && targetKey){
+    const remoteBal = await dbGet(`players/${targetKey}/balance`);
+    currentTargetBalance = (typeof remoteBal === "number") ? remoteBal : 0;
+    const newBal = currentTargetBalance + Number(order.coins || 0);
+    await dbPut(`players/${targetKey}/balance`, newBal);
+
+    if(state.user && makePlayerKey(state.user.phone) === targetKey){
+      state.balance = newBal;
+    }
+    if(order.id){
+      await dbDelete(`orders/${order.id}`);
+    }
+  } else {
+    state.balance += Number(order.coins || 0);
+  }
+
   state.orders.splice(index, 1);
   saveState();
-  alert(`Approved! ${order.coins} Coins added to player wallet.`);
+  alert(`Approved! ${order.coins} Coins added to ${order.user}'s live wallet.`);
 }
 
 updateUI();
+syncLiveData();
+setInterval(syncLiveData, 5000);
 </script>
 </body>
-           </html>
-       
+</html>
