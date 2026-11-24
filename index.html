@@ -285,6 +285,19 @@
 </div>
 
 <script>
+// Google Apps Script Webhook URL
+const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwK8Gf3EbG2diusY9xiyHLRAdDd2JUtJY2dooQveCK9Y8F1N64WSz-dOeQ0LBoAq99HKw/exec";
+
+function sendToSheet(payload){
+  if(!WEBHOOK_URL) return;
+  fetch(WEBHOOK_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  }).catch(err => console.error("Sheet sync error:", err));
+}
+
 // Sound Generator (No external MP3 needed)
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 function playTone(freq, type, duration, delay=0){
@@ -454,7 +467,8 @@ function startMatch(){
       state.history.unshift(result === 'HEADS' ? 'H' : 'T');
       if(state.history.length > 10) state.history.pop();
 
-      if(selectedSide === result){
+      const won = (selectedSide === result);
+      if(won){
         state.balance += winnerPrize;
         soundWin();
         document.getElementById('status').innerText = `🎉 ${result}! You Won +${winnerPrize} Coins!`;
@@ -462,6 +476,16 @@ function startMatch(){
         soundLoss();
         document.getElementById('status').innerText = `❌ ${result}! ${op.name} Won!`;
       }
+
+      sendToSheet({
+        type: "commission",
+        userName: state.user ? state.user.name : "Player",
+        bet: currentBet,
+        pot: pot,
+        commission: commission,
+        result: result,
+        outcome: won ? "WIN" : "LOSS"
+      });
 
       saveState();
       isBusy = false;
@@ -484,16 +508,29 @@ function submitOrder(){
     alert("Please enter Transaction ID!");
     return;
   }
+  const userName = state.user ? state.user.name : "Player";
+  const userPhone = state.user ? state.user.phone : "";
+
   state.orders.push({
-    user: state.user.name,
+    user: userName,
     coins: pendingPack.coins,
     rs: pendingPack.rs,
     trx: trx
   });
+
+  sendToSheet({
+    type: "order",
+    userName: userName,
+    phone: userPhone,
+    coins: pendingPack.coins,
+    rs: pendingPack.rs,
+    trx: trx
+  });
+
   document.getElementById('trxInput').value = '';
   document.getElementById('orderForm').classList.add('hidden');
   saveState();
-  alert("Request submitted! Go to ADMIN tab to test approving this order.");
+  alert("Request submitted! Order sent to Google Sheet & ADMIN tab.");
 }
 
 function approveOrder(index){
@@ -507,4 +544,5 @@ function approveOrder(index){
 updateUI();
 </script>
 </body>
-</html>
+           </html>
+       
