@@ -118,9 +118,21 @@
   }
   .play-btn:disabled{opacity:0.45;cursor:not-allowed}
 
+  .cancel-btn{
+    width:100%;padding:11px;margin-top:8px;border:1px solid #ff5e5e;
+    border-radius:12px;background:#2a141c;color:#ff8a8a;
+    font-weight:bold;cursor:pointer;
+  }
+
   #status{
     min-height:28px;margin:10px 0;font-weight:bold;
     color:#ffd34e;font-size:15px;
+  }
+
+  .lobby-item{
+    display:flex;justify-content:space-between;align-items:center;
+    background:#1a2440;padding:12px;border-radius:12px;margin-bottom:8px;
+    border:1px solid #2e3e6b;text-align:left;gap:8px;
   }
 
   /* Shop */
@@ -191,8 +203,8 @@
           <div class="vs">VS</div>
           <div class="player">
             <div class="avatar" id="opAvatar">👤</div>
-            <b id="opNameDisplay">Searching...</b>
-            <div class="badge" id="opSideBadge">Opponent</div>
+            <b id="opNameDisplay">No Opponent</b>
+            <div class="badge" id="opSideBadge">-</div>
           </div>
         </div>
       </div>
@@ -223,8 +235,15 @@
           </div>
         </div>
 
-        <div id="status">Buy coins from Shop & select side</div>
-        <button type="button" class="play-btn" id="playBtn" onclick="startMatch()" disabled>FIND OPPONENT & FLIP</button>
+        <div id="status">Select side & create or join a real match</div>
+        <button type="button" class="play-btn" id="playBtn" onclick="createRealMatch()" disabled>CREATE LIVE MATCH</button>
+        <button type="button" class="cancel-btn hidden" id="cancelMatchBtn" onclick="cancelMyWaitingMatch()">CANCEL WAITING MATCH</button>
+      </div>
+
+      <!-- Open Real Player Matches -->
+      <div class="card" style="padding:14px">
+        <div style="font-size:13px;font-weight:bold;color:#ffd34e;margin-bottom:8px;text-align:left">🟢 Open Real Player Matches</div>
+        <div id="openMatchesList" style="font-size:13px;color:#aeb9d4">Checking live matches...</div>
       </div>
 
       <div class="card" style="padding:12px">
@@ -312,6 +331,21 @@ async function dbPut(path, data){
   }
 }
 
+async function dbPatch(path, data){
+  if(!hasFirebase()) return null;
+  try{
+    const res = await fetch(`${FIREBASE_DB_URL}/${path}.json`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
+    if(!res.ok) return null;
+    return await res.json();
+  }catch(_){
+    return null;
+  }
+}
+
 async function dbPost(path, data){
   if(!hasFirebase()) return null;
   try{
@@ -383,6 +417,8 @@ let state = {
   balance: 0,
   adminCommission: 0,
   processedOrders: {},
+  settledMatches: {},
+  activeMatchId: null,
   history: ['H','T','H','H','T']
 };
 
@@ -391,6 +427,7 @@ try{
   if(saved && typeof saved === 'object'){
     state = { ...state, ...saved };
     if(!state.processedOrders) state.processedOrders = {};
+    if(!state.settledMatches) state.settledMatches = {};
     if(!Array.isArray(state.history) || state.history.length === 0) state.history = ['H','T','H','H','T'];
   }
 }catch(_){}
@@ -400,14 +437,7 @@ let selectedSide = '';
 let isBusy = false;
 let pendingPack = null;
 let isSyncing = false;
-
-const opponents = [
-  {name:"Ali_Khan99", avatar:"🧔"},
-  {name:"Usman_Pro", avatar:"🧑"},
-  {name:"Bilal_007", avatar:"👨"},
-  {name:"Hamza_PK", avatar:"🧔‍♂️"},
-  {name:"Zain_King", avatar:"👦"}
-];
+let openMatches = [];
 
 function saveState(){
   try{
@@ -445,7 +475,6 @@ async function registerUser(){
   saveState();
   showMainScreen();
 
-  // Sync with Firebase in background so UI never freezes
   const existing = await dbGet(`players/${key}`);
   if(existing && typeof existing.balance === "number"){
     state.balance = existing.balance;
@@ -502,6 +531,259 @@ async function processApprovedFirebaseOrders(){
   }
 }
 
+function animateCoinVisual(result){
+  const coin = document.getElementById('coin3d');
+  coin.classList.remove('anim-heads','anim-tails');
+  void coin.offsetWidth;
+  coin.classList.add(result === 'HEADS' ? 'anim-heads' : 'anim-tails');
+  soundFlip();
+}
+
+async function handleCompletedMatch(matchId, m){
+  if(!state.user || state.settledMatches[matchId]) return;
+
+  const myKey = state.user.key || makePlayerKey(state.user.phone);
+  const isCreator = (m.creatorKey === myKey);
+  const isJoiner = (m.joinerKey === myKey);
+  if(!isCreator && !isJoiner) return;
+
+  const pot = Number(m.bet || 0) * 2;
+  const commission = Math.floor(pot * 0.20);
+  const winnerPrize = pot - commission;
+  const result = m.result || (Math.random() < 0.5 ? 'HEADS' : 'TAILS');
+  const mySide = isCreator ? m.creatorSide : m.joinerSide;
+  const opName = isCreator ? (m.joinerName || "Opponent") : (m.creatorName || "Opponent");
+  const won = (mySide === result);
+
+  document.getElementById('opNameDisplay').innerText = opName;
+  document.getElementById('opAvatar').innerText = "🧑";
+  document.getElementById('opSideBadge').innerText = isCreator ? m.joinerSide : m.creatorSide;
+  document.getElementById('mySideBadge').innerText = mySide;
+
+  isBusy = true;
+  document.getElementById('playBtn').disabled = true;
+  document.getElementById('cancelMatchBtn').classList.add('hidden');
+  document.getElementById('status').innerText = `⚔️ Live Battle with ${opName}! Flipping...`;
+  animateCoinVisual(result);
+
+  state.settledMatches[matchId] = true;
+  if(state.activeMatchId === matchId){
+    state.activeMatchId = null;
+  }
+
+  setTimeout(async ()=>{
+    state.history.unshift(result === 'HEADS' ? 'H' : 'T');
+    if(state.history.length > 10) state.history.pop();
+
+    if(won){
+      const pData = await dbGet(`players/${myKey}`);
+      const curBal = (pData && typeof pData.balance === "number") ? pData.balance : state.balance;
+      const newBal = curBal + winnerPrize;
+      await dbPut(`players/${myKey}/balance`, newBal);
+      state.balance = newBal;
+
+      const commData = await dbGet("admin/commission");
+      const curComm = (typeof commData === "number") ? commData : state.adminCommission;
+      const newComm = curComm + commission;
+      await dbPut("admin/commission", newComm);
+      state.adminCommission = newComm;
+
+      soundWin();
+      document.getElementById('status').innerText = `🎉 ${result}! You Won +${winnerPrize} Coins vs ${opName}!`;
+
+      sendToSheet({
+        type: "commission",
+        userName: state.user.name,
+        opponent: opName,
+        bet: m.bet,
+        pot: pot,
+        commission: commission,
+        result: result,
+        outcome: "WIN"
+      });
+    } else {
+      soundLoss();
+      document.getElementById('status').innerText = `❌ ${result}! ${opName} Won vs You!`;
+    }
+
+    saveState();
+    isBusy = false;
+    if(selectedSide) document.getElementById('playBtn').disabled = false;
+  }, 1650);
+}
+
+async function syncMatches(){
+  if(!hasFirebase() || !state.user) return;
+  const matchesObj = await dbGet("matches");
+  const myKey = state.user.key || makePlayerKey(state.user.phone);
+  const list = [];
+  let myWaitingMatch = null;
+
+  if(matchesObj && typeof matchesObj === "object"){
+    for(const [matchId, m] of Object.entries(matchesObj)){
+      if(!m || typeof m !== "object") continue;
+
+      if(m.status === "Waiting"){
+        if(m.creatorKey === myKey){
+          myWaitingMatch = { matchId, ...m };
+        } else {
+          list.push({ matchId, ...m });
+        }
+      } else if(m.status === "Completed"){
+        if((m.creatorKey === myKey || m.joinerKey === myKey) && !state.settledMatches[matchId]){
+          await handleCompletedMatch(matchId, m);
+        }
+      }
+    }
+  }
+
+  openMatches = list;
+
+  if(myWaitingMatch){
+    state.activeMatchId = myWaitingMatch.matchId;
+    document.getElementById('cancelMatchBtn').classList.remove('hidden');
+    document.getElementById('playBtn').disabled = true;
+    document.getElementById('status').innerText = `⏳ Waiting for real opponent (${myWaitingMatch.bet} Coins | ${myWaitingMatch.creatorSide})...`;
+  } else {
+    state.activeMatchId = null;
+    document.getElementById('cancelMatchBtn').classList.add('hidden');
+    if(!isBusy && selectedSide){
+      document.getElementById('playBtn').disabled = false;
+    }
+  }
+
+  renderOpenMatches();
+}
+
+function renderOpenMatches(){
+  const box = document.getElementById('openMatchesList');
+  if(!box) return;
+
+  if(!openMatches.length){
+    box.innerHTML = "No open real matches right now. Create one or open on another device to test!";
+    return;
+  }
+
+  box.innerHTML = openMatches.map(m => `
+    <div class="lobby-item">
+      <div>
+        <b style="color:#ffd34e">${m.creatorName || "Player"}</b> • <b>${m.bet} Coins</b><br>
+        <small>Creator Side: ${m.creatorSide} (You get ${m.creatorSide === 'HEADS' ? 'TAILS' : 'HEADS'})</small>
+      </div>
+      <button type="button" class="buy-btn" onclick="joinRealMatch('${m.matchId}')">JOIN</button>
+    </div>
+  `).join('');
+}
+
+async function createRealMatch(){
+  if(isBusy || !selectedSide || !state.user) return;
+  if(state.activeMatchId){
+    alert("You already have an active waiting match. Cancel it first or wait for an opponent.");
+    return;
+  }
+  if(state.balance < currentBet){
+    alert("Insufficient Coins! Please buy coins from the Shop.");
+    switchTab('shop');
+    return;
+  }
+
+  const myKey = state.user.key || makePlayerKey(state.user.phone);
+  const newBalance = state.balance - currentBet;
+
+  state.balance = newBalance;
+  if(hasFirebase()){
+    await dbPut(`players/${myKey}/balance`, newBalance);
+    const created = await dbPost("matches", {
+      creatorKey: myKey,
+      creatorName: state.user.name,
+      creatorSide: selectedSide,
+      bet: currentBet,
+      status: "Waiting",
+      createdAt: Date.now()
+    });
+    if(created && created.name){
+      state.activeMatchId = created.name;
+    }
+  }
+
+  document.getElementById('opNameDisplay').innerText = "Waiting...";
+  document.getElementById('opAvatar').innerText = "⏳";
+  document.getElementById('opSideBadge').innerText = selectedSide === 'HEADS' ? 'TAILS' : 'HEADS';
+  saveState();
+  await syncMatches();
+}
+
+async function cancelMyWaitingMatch(){
+  if(!state.activeMatchId || !state.user) return;
+  const matchId = state.activeMatchId;
+  const m = await dbGet(`matches/${matchId}`);
+  const myKey = state.user.key || makePlayerKey(state.user.phone);
+
+  if(m && m.status === "Waiting" && m.creatorKey === myKey){
+    const refund = Number(m.bet || 0);
+    const pData = await dbGet(`players/${myKey}`);
+    const curBal = (pData && typeof pData.balance === "number") ? pData.balance : state.balance;
+    const restoredBal = curBal + refund;
+
+    await dbPut(`players/${myKey}/balance`, restoredBal);
+    await dbDelete(`matches/${matchId}`);
+    state.balance = restoredBal;
+  }
+
+  state.activeMatchId = null;
+  saveState();
+  await syncMatches();
+}
+
+async function joinRealMatch(matchId){
+  if(isBusy || !state.user) return;
+  const m = await dbGet(`matches/${matchId}`);
+  if(!m || m.status !== "Waiting"){
+    alert("This match is no longer available.");
+    await syncMatches();
+    return;
+  }
+
+  const myKey = state.user.key || makePlayerKey(state.user.phone);
+  if(m.creatorKey === myKey){
+    alert("You cannot join your own match.");
+    return;
+  }
+
+  const betAmount = Number(m.bet || 0);
+  if(state.balance < betAmount){
+    alert(`You need ${betAmount} Coins to join this match.`);
+    switchTab('shop');
+    return;
+  }
+
+  const newBalance = state.balance - betAmount;
+  const joinerSide = (m.creatorSide === 'HEADS') ? 'TAILS' : 'HEADS';
+  const result = Math.random() < 0.5 ? 'HEADS' : 'TAILS';
+
+  state.balance = newBalance;
+  await dbPut(`players/${myKey}/balance`, newBalance);
+  await dbPatch(`matches/${matchId}`, {
+    joinerKey: myKey,
+    joinerName: state.user.name,
+    joinerSide: joinerSide,
+    result: result,
+    status: "Completed",
+    completedAt: Date.now()
+  });
+
+  saveState();
+  await handleCompletedMatch(matchId, {
+    ...m,
+    joinerKey: myKey,
+    joinerName: state.user.name,
+    joinerSide: joinerSide,
+    result: result,
+    status: "Completed"
+  });
+  await syncMatches();
+}
+
 async function syncLiveData(){
   if(!hasFirebase() || isSyncing) return;
   isSyncing = true;
@@ -514,6 +796,7 @@ async function syncLiveData(){
       if(pData && typeof pData.balance === "number"){
         state.balance = pData.balance;
       }
+      await syncMatches();
     }
 
     const commData = await dbGet("admin/commission");
@@ -570,85 +853,10 @@ function chooseSide(side){
   document.getElementById('btnTails').classList.toggle('selected', side==='TAILS');
   document.getElementById('mySideBadge').innerText = side;
   document.getElementById('opSideBadge').innerText = side==='HEADS' ? 'TAILS' : 'HEADS';
-  document.getElementById('playBtn').disabled = false;
-  document.getElementById('status').innerText = "Ready! Tap Find Opponent";
-}
-
-function startMatch(){
-  if(isBusy || !selectedSide) return;
-  if(state.balance < currentBet){
-    alert("Insufficient Coins! Please buy coins from the Shop.");
-    switchTab('shop');
-    return;
+  if(!state.activeMatchId){
+    document.getElementById('playBtn').disabled = false;
+    document.getElementById('status').innerText = "Ready! Create a live match or join one below";
   }
-
-  isBusy = true;
-  document.getElementById('playBtn').disabled = true;
-  document.getElementById('status').innerText = "🔍 Matching with real player...";
-  document.getElementById('opNameDisplay').innerText = "Searching...";
-
-  setTimeout(async ()=>{
-    const op = opponents[Math.floor(Math.random()*opponents.length)];
-    document.getElementById('opNameDisplay').innerText = op.name;
-    document.getElementById('opAvatar').innerText = op.avatar;
-    document.getElementById('status').innerText = `⚔️ Matched with ${op.name}! Flipping...`;
-
-    state.balance -= currentBet;
-    if(hasFirebase() && state.user && state.user.phone){
-      await dbPut(`players/${makePlayerKey(state.user.phone)}/balance`, state.balance);
-    }
-    saveState();
-
-    const coin = document.getElementById('coin3d');
-    coin.classList.remove('anim-heads','anim-tails');
-    void coin.offsetWidth;
-
-    const result = Math.random() < 0.5 ? 'HEADS' : 'TAILS';
-    coin.classList.add(result === 'HEADS' ? 'anim-heads' : 'anim-tails');
-    soundFlip();
-
-    setTimeout(async ()=>{
-      const pot = currentBet * 2;
-      const commission = Math.floor(pot * 0.20);
-      const winnerPrize = pot - commission;
-
-      state.adminCommission += commission;
-      state.history.unshift(result === 'HEADS' ? 'H' : 'T');
-      if(state.history.length > 10) state.history.pop();
-
-      const won = (selectedSide === result);
-      if(won){
-        state.balance += winnerPrize;
-        soundWin();
-        document.getElementById('status').innerText = `🎉 ${result}! You Won +${winnerPrize} Coins!`;
-      } else {
-        soundLoss();
-        document.getElementById('status').innerText = `❌ ${result}! ${op.name} Won!`;
-      }
-
-      if(hasFirebase()){
-        if(state.user && state.user.phone){
-          await dbPut(`players/${makePlayerKey(state.user.phone)}/balance`, state.balance);
-        }
-        await dbPut("admin/commission", state.adminCommission);
-      }
-
-      sendToSheet({
-        type: "commission",
-        userName: state.user ? state.user.name : "Player",
-        bet: currentBet,
-        pot: pot,
-        commission: commission,
-        result: result,
-        outcome: won ? "WIN" : "LOSS"
-      });
-
-      saveState();
-      isBusy = false;
-      document.getElementById('playBtn').disabled = false;
-    }, 1650);
-
-  }, 1200);
 }
 
 function openOrder(coins, rs){
@@ -702,7 +910,7 @@ updateUI();
 if(state.user && state.user.name){
   syncLiveData();
 }
-setInterval(syncLiveData, 5000);
+setInterval(syncLiveData, 4000);
 </script>
 </body>
 </html>
