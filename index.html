@@ -145,6 +145,9 @@
   }
   .dot.H{background:#ffd34e;color:#111}
   .dot.T{background:#cfd6e6;color:#111}
+  #regMsg{
+    margin-top:10px;font-size:13px;color:#ffd34e;min-height:20px;
+  }
 </style>
 </head>
 <body>
@@ -153,7 +156,7 @@
   <div class="logo">🪙 COIN BATTLE</div>
   <div class="wallet-pill">
     <span>💰 <span id="balanceDisplay">0</span></span>
-    <button onclick="switchTab('shop')" style="background:#ffd34e;border:0;border-radius:50%;width:22px;height:22px;font-weight:bold;cursor:pointer">+</button>
+    <button type="button" onclick="switchTab('shop')" style="background:#ffd34e;border:0;border-radius:50%;width:22px;height:22px;font-weight:bold;cursor:pointer">+</button>
   </div>
 </header>
 
@@ -165,14 +168,15 @@
     <p style="font-size:13px;color:#aeb9d4">0 Free Coins • Buy Coins from Shop to Play</p>
     <input type="text" id="playerNameInput" placeholder="Enter Your Name (e.g. Shahid)">
     <input type="tel" id="playerPhoneInput" placeholder="Mobile Number (03XX-XXXXXXX)">
-    <button class="play-btn" onclick="registerUser()">ENTER ARENA</button>
+    <button type="button" id="enterArenaBtn" class="play-btn">ENTER ARENA</button>
+    <div id="regMsg"></div>
   </div>
 
   <!-- Main App -->
   <div id="mainApp" class="hidden">
     <div class="nav-tabs">
-      <button class="tab active" id="tabArena" onclick="switchTab('arena')">⚔️ ARENA</button>
-      <button class="tab" id="tabShop" onclick="switchTab('shop')">🛒 SHOP</button>
+      <button type="button" class="tab active" id="tabArena" onclick="switchTab('arena')">⚔️ ARENA</button>
+      <button type="button" class="tab" id="tabShop" onclick="switchTab('shop')">🛒 SHOP</button>
     </div>
 
     <!-- ARENA SECTION -->
@@ -196,10 +200,10 @@
       <div class="card">
         <div style="font-size:13px;color:#aeb9d4">1. Select Match Entry Fee (Coins)</div>
         <div class="bet-grid">
-          <button class="bet-btn active" onclick="setBet(100,this)">100</button>
-          <button class="bet-btn" onclick="setBet(250,this)">250</button>
-          <button class="bet-btn" onclick="setBet(500,this)">500</button>
-          <button class="bet-btn" onclick="setBet(1000,this)">1000</button>
+          <button type="button" class="bet-btn active" onclick="setBet(100,this)">100</button>
+          <button type="button" class="bet-btn" onclick="setBet(250,this)">250</button>
+          <button type="button" class="bet-btn" onclick="setBet(500,this)">500</button>
+          <button type="button" class="bet-btn" onclick="setBet(1000,this)">1000</button>
         </div>
 
         <div class="pool-box">
@@ -208,8 +212,8 @@
 
         <div style="font-size:13px;color:#aeb9d4">2. Choose Your Coin Side</div>
         <div class="side-btns">
-          <button class="choice" id="btnHeads" onclick="chooseSide('HEADS')">👑 HEADS</button>
-          <button class="choice" id="btnTails" onclick="chooseSide('TAILS')">🦅 TAILS</button>
+          <button type="button" class="choice" id="btnHeads" onclick="chooseSide('HEADS')">👑 HEADS</button>
+          <button type="button" class="choice" id="btnTails" onclick="chooseSide('TAILS')">🦅 TAILS</button>
         </div>
 
         <div class="stage">
@@ -220,7 +224,7 @@
         </div>
 
         <div id="status">Buy coins from Shop & select side</div>
-        <button class="play-btn" id="playBtn" onclick="startMatch()" disabled>FIND OPPONENT & FLIP</button>
+        <button type="button" class="play-btn" id="playBtn" onclick="startMatch()" disabled>FIND OPPONENT & FLIP</button>
       </div>
 
       <div class="card" style="padding:12px">
@@ -240,7 +244,7 @@
             <b style="color:#ffd34e;font-size:16px">💰 500 Coins</b>
             <div style="font-size:12px;color:#aeb9d4">Starter Pack</div>
           </div>
-          <button class="buy-btn" onclick="openOrder(500, 250)">Rs. 250</button>
+          <button type="button" class="buy-btn" onclick="openOrder(500, 250)">Rs. 250</button>
         </div>
 
         <div class="shop-item">
@@ -248,7 +252,7 @@
             <b style="color:#ffd34e;font-size:16px">💰 1,200 Coins</b>
             <div style="font-size:12px;color:#aeb9d4">Popular Pack</div>
           </div>
-          <button class="buy-btn" onclick="openOrder(1200, 500)">Rs. 500</button>
+          <button type="button" class="buy-btn" onclick="openOrder(1200, 500)">Rs. 500</button>
         </div>
 
         <div class="shop-item">
@@ -256,13 +260,13 @@
             <b style="color:#ffd34e;font-size:16px">💰 3,000 Coins</b>
             <div style="font-size:12px;color:#aeb9d4">Pro Arena Pack</div>
           </div>
-          <button class="buy-btn" onclick="openOrder(3000, 1000)">Rs. 1,000</button>
+          <button type="button" class="buy-btn" onclick="openOrder(3000, 1000)">Rs. 1,000</button>
         </div>
 
         <div id="orderForm" class="hidden" style="margin-top:14px;border-top:1px solid #2e3e6b;padding-top:12px">
           <div id="selectedPackText" style="color:#4cd964;font-weight:bold;margin-bottom:6px"></div>
           <input type="text" id="trxInput" placeholder="Enter Easypaisa/JazzCash Trx ID">
-          <button class="play-btn" onclick="submitOrder()">SUBMIT PAYMENT PROOF</button>
+          <button type="button" class="play-btn" onclick="submitOrder()">SUBMIT PAYMENT PROOF</button>
         </div>
       </div>
     </div>
@@ -271,14 +275,11 @@
 </div>
 
 <script>
-// 1. Google Apps Script Webhook URL (Orders & Commissions Sheet Ledger)
 const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwK8Gf3EbG2diusY9xiyHLRAdDd2JUtJY2dooQveCK9Y8F1N64WSz-dOeQ0LBoAq99HKw/exec";
-
-// 2. Firebase Realtime Database URL
 const FIREBASE_DB_URL = "https://coinbattlepro-41b9d-default-rtdb.firebaseio.com";
 
 function hasFirebase(){
-  return FIREBASE_DB_URL && !FIREBASE_DB_URL.includes("YOUR_FIREBASE_DATABASE_URL");
+  return Boolean(FIREBASE_DB_URL && FIREBASE_DB_URL.startsWith("https://"));
 }
 
 function makePlayerKey(phone){
@@ -287,58 +288,82 @@ function makePlayerKey(phone){
 
 async function dbGet(path){
   if(!hasFirebase()) return null;
-  const res = await fetch(`${FIREBASE_DB_URL}/${path}.json`);
-  return await res.json();
+  try{
+    const res = await fetch(`${FIREBASE_DB_URL}/${path}.json`);
+    if(!res.ok) return null;
+    return await res.json();
+  }catch(_){
+    return null;
+  }
 }
 
 async function dbPut(path, data){
   if(!hasFirebase()) return null;
-  const res = await fetch(`${FIREBASE_DB_URL}/${path}.json`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
-  });
-  return await res.json();
+  try{
+    const res = await fetch(`${FIREBASE_DB_URL}/${path}.json`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
+    if(!res.ok) return null;
+    return await res.json();
+  }catch(_){
+    return null;
+  }
 }
 
 async function dbPost(path, data){
   if(!hasFirebase()) return null;
-  const res = await fetch(`${FIREBASE_DB_URL}/${path}.json`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
-  });
-  return await res.json();
+  try{
+    const res = await fetch(`${FIREBASE_DB_URL}/${path}.json`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
+    if(!res.ok) return null;
+    return await res.json();
+  }catch(_){
+    return null;
+  }
 }
 
 async function dbDelete(path){
   if(!hasFirebase()) return null;
-  await fetch(`${FIREBASE_DB_URL}/${path}.json`, { method: "DELETE" });
+  try{
+    await fetch(`${FIREBASE_DB_URL}/${path}.json`, { method: "DELETE" });
+  }catch(_){}
 }
 
 function sendToSheet(payload){
   if(!WEBHOOK_URL) return;
-  fetch(WEBHOOK_URL, {
-    method: "POST",
-    mode: "no-cors",
-    headers: { "Content-Type": "text/plain;charset=utf-8" },
-    body: JSON.stringify(payload)
-  }).catch(err => console.error("Sheet sync error:", err));
+  try{
+    fetch(WEBHOOK_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload)
+    }).catch(()=>{});
+  }catch(_){}
 }
 
-// Sound Generator (No external MP3 needed)
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 function playTone(freq, type, duration, delay=0){
-  setTimeout(()=>{
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.type = type;
-    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-    osc.connect(gain); gain.connect(audioCtx.destination);
-    osc.start(); osc.stop(audioCtx.currentTime + duration);
-  }, delay);
+  try{
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if(!AudioContextClass) return;
+    if(!window._audioCtx) window._audioCtx = new AudioContextClass();
+    const ctx = window._audioCtx;
+    if(ctx.state === "suspended") ctx.resume().catch(()=>{});
+    setTimeout(()=>{
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, ctx.currentTime);
+      gain.gain.setValueAtTime(0.15, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(); osc.stop(ctx.currentTime + duration);
+    }, delay);
+  }catch(_){}
 }
 function soundFlip(){
   for(let i=0;i<8;i++) playTone(1200 + (i*80), 'sine', 0.08, i*140);
@@ -353,15 +378,22 @@ function soundLoss(){
   playTone(220,'sawtooth',0.35,200);
 }
 
-// App State
-let state = JSON.parse(localStorage.getItem('coinBattlePro')) || {
+let state = {
   user: null,
   balance: 0,
   adminCommission: 0,
   processedOrders: {},
   history: ['H','T','H','H','T']
 };
-if(!state.processedOrders) state.processedOrders = {};
+
+try{
+  const saved = JSON.parse(localStorage.getItem('coinBattlePro') || 'null');
+  if(saved && typeof saved === 'object'){
+    state = { ...state, ...saved };
+    if(!state.processedOrders) state.processedOrders = {};
+    if(!Array.isArray(state.history) || state.history.length === 0) state.history = ['H','T','H','H','T'];
+  }
+}catch(_){}
 
 let currentBet = 100;
 let selectedSide = '';
@@ -378,8 +410,56 @@ const opponents = [
 ];
 
 function saveState(){
-  localStorage.setItem('coinBattlePro', JSON.stringify(state));
+  try{
+    localStorage.setItem('coinBattlePro', JSON.stringify(state));
+  }catch(_){}
   updateUI();
+}
+
+function showMainScreen(){
+  document.getElementById('loginBox').classList.add('hidden');
+  document.getElementById('mainApp').classList.remove('hidden');
+  updateUI();
+}
+
+async function registerUser(){
+  const msgEl = document.getElementById('regMsg');
+  const name = (document.getElementById('playerNameInput').value || '').trim();
+  const rawPhone = (document.getElementById('playerPhoneInput').value || '').trim();
+  const cleanDigits = rawPhone.replace(/[^0-9]/g, '');
+
+  if(!name){
+    if(msgEl) msgEl.innerText = "براہ کرم اپنا نام لکھیں۔";
+    return;
+  }
+  if(cleanDigits.length < 10){
+    if(msgEl) msgEl.innerText = "براہ کرم کم از کم 10 ہندسوں کا موبائل نمبر لکھیں (مثلاً 03297231931)۔";
+    return;
+  }
+
+  const key = makePlayerKey(cleanDigits);
+  state.user = { name: name, phone: cleanDigits, key: key };
+  if(typeof state.balance !== 'number') state.balance = 0;
+
+  if(msgEl) msgEl.innerText = "اندر لے جا رہے ہیں...";
+  saveState();
+  showMainScreen();
+
+  // Sync with Firebase in background so UI never freezes
+  const existing = await dbGet(`players/${key}`);
+  if(existing && typeof existing.balance === "number"){
+    state.balance = existing.balance;
+    saveState();
+  } else {
+    await dbPut(`players/${key}`, {
+      name: name,
+      phone: cleanDigits,
+      balance: state.balance,
+      updatedAt: Date.now()
+    });
+  }
+
+  syncLiveData();
 }
 
 async function processApprovedFirebaseOrders(){
@@ -425,7 +505,7 @@ async function processApprovedFirebaseOrders(){
 async function syncLiveData(){
   if(!hasFirebase() || isSyncing) return;
   isSyncing = true;
-  try {
+  try{
     await processApprovedFirebaseOrders();
 
     if(state.user && state.user.phone){
@@ -442,48 +522,19 @@ async function syncLiveData(){
     }
 
     saveState();
-  } catch(e){
-    console.error("Live sync error:", e);
-  } finally {
+  }catch(_){
+  }finally{
     isSyncing = false;
   }
 }
 
-async function registerUser(){
-  const name = document.getElementById('playerNameInput').value.trim();
-  const phone = document.getElementById('playerPhoneInput').value.trim();
-  if(!name || phone.length < 10){
-    alert("Please enter valid name and mobile number!");
-    return;
-  }
-
-  const key = makePlayerKey(phone);
-  let existing = hasFirebase() ? await dbGet(`players/${key}`) : null;
-
-  const initialBalance = (existing && typeof existing.balance === "number") ? existing.balance : 0;
-  state.user = { name, phone, key };
-  state.balance = initialBalance;
-
-  if(hasFirebase()){
-    await dbPut(`players/${key}`, {
-      name,
-      phone,
-      balance: initialBalance,
-      updatedAt: Date.now()
-    });
-  }
-
-  saveState();
-  await syncLiveData();
-}
-
 function updateUI(){
-  if(state.user){
+  if(state.user && state.user.name){
     document.getElementById('loginBox').classList.add('hidden');
     document.getElementById('mainApp').classList.remove('hidden');
     document.getElementById('myNameDisplay').innerText = state.user.name;
   }
-  document.getElementById('balanceDisplay').innerText = state.balance;
+  document.getElementById('balanceDisplay').innerText = state.balance || 0;
 
   const pot = currentBet * 2;
   const fee = Math.floor(pot * 0.20);
@@ -492,7 +543,6 @@ function updateUI(){
   document.getElementById('winPrize').innerText = prize;
   document.getElementById('adminFee').innerText = fee;
 
-  // Render History
   const strip = document.getElementById('historyStrip');
   strip.innerHTML = state.history.map(h => `<div class="dot ${h}">${h}</div>`).join('');
 }
@@ -573,9 +623,6 @@ function startMatch(){
         document.getElementById('status').innerText = `🎉 ${result}! You Won +${winnerPrize} Coins!`;
       } else {
         soundLoss();
-        document.getElementById('status').innerText = `🎉 ${result}! You Won +${winnerPrize} Coins!`;
-      } else {
-        soundLoss();
         document.getElementById('status').innerText = `❌ ${result}! ${op.name} Won!`;
       }
 
@@ -604,7 +651,6 @@ function startMatch(){
   }, 1200);
 }
 
-// Shop Logic
 function openOrder(coins, rs){
   pendingPack = {coins, rs};
   document.getElementById('orderForm').classList.remove('hidden');
@@ -612,7 +658,7 @@ function openOrder(coins, rs){
 }
 
 async function submitOrder(){
-  const trx = document.getElementById('trxInput').value.trim();
+  const trx = (document.getElementById('trxInput').value || '').trim();
   if(!trx){
     alert("Please enter Transaction ID!");
     return;
@@ -650,8 +696,12 @@ async function submitOrder(){
   alert("Request submitted! Waiting for admin approval in Firebase.");
 }
 
+document.getElementById('enterArenaBtn').addEventListener('click', registerUser);
+
 updateUI();
-syncLiveData();
+if(state.user && state.user.name){
+  syncLiveData();
+}
 setInterval(syncLiveData, 5000);
 </script>
 </body>
