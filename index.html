@@ -115,11 +115,12 @@
   .anim-tails{animation:tossTails 1.5s cubic-bezier(0.25,0.8,0.25,1) forwards}
 
   .bet-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}
-  .bet-btn{
+  .amount-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+  .bet-btn,.amt-btn{
     background:#1c2747;color:#fff;border:1px solid #324475;
-    padding:10px 4px;border-radius:10px;font-weight:bold;cursor:pointer;
+    padding:10px 4px;border-radius:10px;font-weight:bold;cursor:pointer;font-size:13px;
   }
-  .bet-btn.active{background:#28a745;border-color:#5ce07a}
+  .bet-btn.active,.amt-btn.active{background:#28a745;border-color:#5ce07a;color:#fff}
 
   .side-btns{display:flex;gap:10px;margin:10px 0}
   .choice{
@@ -191,15 +192,11 @@
   .stat-box b{display:block;font-size:16px;color:#ffd34e}
   .stat-box small{font-size:11px;color:#9aa8cc}
 
-  .shop-item{
-    display:flex;justify-content:space-between;align-items:center;
-    background:#1a2440;padding:13px;border-radius:14px;margin-bottom:10px;
-    border:1px solid #2e3e6b;text-align:left;gap:8px;
+  .locked-box{
+    background:#0d1326;border:1px solid #324475;border-radius:12px;
+    padding:10px;margin:8px 0;font-size:13px;color:#ffd34e;font-weight:bold;
   }
-  .buy-btn{
-    background:#28a745;color:#fff;border:0;padding:10px 14px;
-    border-radius:10px;font-weight:bold;cursor:pointer;
-  }
+
   input,select{
     width:100%;padding:12px;border-radius:10px;border:1px solid #354778;
     background:#0c1224;color:#fff;margin:7px 0;font-size:14px;
@@ -258,7 +255,6 @@
 
     <!-- ARENA SECTION -->
     <div id="sectionArena">
-      <!-- Game Selector -->
       <div class="mode-switch">
         <button type="button" class="mode-btn active" id="modeCoinBtn" onclick="selectGameMode('COIN')">🪙 HEADS / TAILS</button>
         <button type="button" class="mode-btn" id="modeXoBtn" onclick="selectGameMode('XO')">❌⭕ TIC-TAC-TOE</button>
@@ -349,36 +345,29 @@
     <!-- SHOP SECTION -->
     <div id="sectionShop" class="hidden">
       <div class="card">
-        <h3 style="color:#ffd34e;margin-top:0">🛒 Official Coin Store</h3>
-        <p style="font-size:12px;color:#aeb9d4">Send payment to Easypaisa / JazzCash: <br><b style="color:#fff">0300-1234567 (Account Title)</b></p>
+        <h3 style="color:#ffd34e;margin-top:0">🛒 Official Coin Store (1 Rs = 1 Coin)</h3>
+        <p style="font-size:12px;color:#aeb9d4">
+          Easypaisa / JazzCash پر اس نمبر پر رقم بھیجیں:<br>
+          <b style="color:#ffd34e;font-size:15px">03297231931</b> <span style="color:#fff">(Shahid Iqbal)</span><br>
+          <small style="color:#9aa8cc">پیکیج بٹن چن کر Trx ID سینڈ کریں • آپ کی آئی ڈی خود بخود ساتھ جائے گی</small>
+        </p>
 
-        <div class="shop-item">
-          <div>
-            <b style="color:#ffd34e;font-size:16px">💰 500 Coins</b>
-            <div style="font-size:12px;color:#aeb9d4">Starter Pack</div>
-          </div>
-          <button type="button" class="buy-btn" onclick="openOrder(500, 250)">Rs. 250</button>
+        <div class="amount-grid" id="shopButtonsGrid">
+          <button type="button" class="amt-btn" onclick="openOrder(50, 50, this)">50 Rs<br><small>50 Coins</small></button>
+          <button type="button" class="amt-btn" onclick="openOrder(100, 100, this)">100 Rs<br><small>100 Coins</small></button>
+          <button type="button" class="amt-btn" onclick="openOrder(200, 200, this)">200 Rs<br><small>200 Coins</small></button>
+          <button type="button" class="amt-btn" onclick="openOrder(300, 300, this)">300 Rs<br><small>300 Coins</small></button>
+          <button type="button" class="amt-btn" onclick="openOrder(500, 500, this)">500 Rs<br><small>500 Coins</small></button>
+          <button type="button" class="amt-btn" onclick="openOrder(1000, 1000, this)">1000 Rs<br><small>1000 Coins</small></button>
+          <button type="button" class="amt-btn" onclick="openOrder(1500, 1500, this)">1500 Rs<br><small>1500 Coins</small></button>
+          <button type="button" class="amt-btn" onclick="openOrder(2000, 2000, this)">2000 Rs<br><small>2000 Coins</small></button>
+          <button type="button" class="amt-btn" onclick="openOrder(3000, 3000, this)">3000 Rs<br><small>3000 Coins</small></button>
         </div>
 
-        <div class="shop-item">
-          <div>
-            <b style="color:#ffd34e;font-size:16px">💰 1,200 Coins</b>
-            <div style="font-size:12px;color:#aeb9d4">Popular Pack</div>
-          </div>
-          <button type="button" class="buy-btn" onclick="openOrder(1200, 500)">Rs. 500</button>
-        </div>
-
-        <div class="shop-item">
-          <div>
-            <b style="color:#ffd34e;font-size:16px">💰 3,000 Coins</b>
-            <div style="font-size:12px;color:#aeb9d4">Pro Arena Pack</div>
-          </div>
-          <button type="button" class="buy-btn" onclick="openOrder(3000, 1000)">Rs. 1,000</button>
-        </div>
-
-        <div id="orderForm" class="hidden" style="margin-top:14px;border-top:1px solid #2e3e6b;padding-top:12px">
-          <div id="selectedPackText" style="color:#4cd964;font-weight:bold;margin-bottom:6px"></div>
-          <input type="text" id="trxInput" placeholder="Enter Easypaisa/JazzCash Trx ID">
+        <div id="orderForm" class="hidden" style="margin-top:12px;border-top:1px solid #2e3e6b;padding-top:12px">
+          <div id="selectedPackText" style="color:#4cd964;font-weight:bold;margin-bottom:4px"></div>
+          <div id="autoAccountBadge" style="font-size:11px;color:#aeb9d4;margin-bottom:6px"></div>
+          <input type="text" id="trxInput" placeholder="Enter Easypaisa / JazzCash Trx ID">
           <input type="text" id="noteInput" placeholder="Optional Sender Name / Note">
           <button type="button" class="play-btn" onclick="submitOrder()">SUBMIT PAYMENT PROOF</button>
         </div>
@@ -389,13 +378,31 @@
     <div id="sectionWithdraw" class="hidden">
       <div class="card">
         <h3 style="color:#ffd34e;margin-top:0">💸 Withdraw Coins</h3>
-        <p style="font-size:12px;color:#aeb9d4">Enter coins to withdraw & your payout wallet details</p>
-        <input type="number" id="withdrawCoinsInput" placeholder="Coins to Withdraw (e.g. 500)">
+        <p style="font-size:12px;color:#aeb9d4">Select withdrawal amount (Secured to your registered number)</p>
+
+        <div class="amount-grid" id="withdrawButtonsGrid">
+          <button type="button" class="amt-btn" onclick="selectWithdrawCoins(50, this)">50</button>
+          <button type="button" class="amt-btn" onclick="selectWithdrawCoins(100, this)">100</button>
+          <button type="button" class="amt-btn" onclick="selectWithdrawCoins(200, this)">200</button>
+          <button type="button" class="amt-btn" onclick="selectWithdrawCoins(300, this)">300</button>
+          <button type="button" class="amt-btn" onclick="selectWithdrawCoins(500, this)">500</button>
+          <button type="button" class="amt-btn" onclick="selectWithdrawCoins(1000, this)">1000</button>
+          <button type="button" class="amt-btn" onclick="selectWithdrawCoins(1500, this)">1500</button>
+          <button type="button" class="amt-btn" onclick="selectWithdrawCoins(2000, this)">2000</button>
+          <button type="button" class="amt-btn" onclick="selectWithdrawCoins(3000, this)">3000</button>
+        </div>
+
+        <div id="selectedWithdrawText" style="color:#4cd964;font-weight:bold;font-size:13px;margin:6px 0">Selected: None</div>
+
         <select id="withdrawMethodInput">
           <option value="JazzCash">JazzCash</option>
           <option value="Easypaisa">Easypaisa</option>
         </select>
-        <input type="tel" id="withdrawAccountInput" placeholder="Receiving Mobile Number (03XXXXXXXXX)">
+
+        <div class="locked-box">
+          🔒 Registered Payout Number: <span id="lockedAccountDisplay">-</span>
+        </div>
+
         <button type="button" class="play-btn" onclick="submitWithdraw()">REQUEST WITHDRAWAL</button>
       </div>
     </div>
@@ -426,6 +433,8 @@
 </div>
 
 <script>
+const ADMIN_PAYMENT_NUMBER = "03297231931";
+const ALLOWED_AMOUNTS = [50, 100, 200, 300, 500, 1000, 1500, 2000, 3000];
 const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwK8Gf3EbG2diusY9xiyHLRAdDd2JUtJY2dooQveCK9Y8F1N64WSz-dOeQ0LBoAq99HKw/exec";
 const FIREBASE_DB_URL = "https://coinbattlepro-41b9d-default-rtdb.firebaseio.com";
 
@@ -435,6 +444,11 @@ function hasFirebase(){
 
 function makePlayerKey(phone){
   return "p_" + String(phone || "").replace(/[^0-9]/g, "");
+}
+
+function isAllowedAmount(val){
+  const n = Number(val);
+  return Number.isInteger(n) && ALLOWED_AMOUNTS.includes(n);
 }
 
 async function dbGet(path){
@@ -507,7 +521,7 @@ function sendToSheet(payload){
       method: "POST",
       mode: "no-cors",
       headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify(paylload)
+      body: JSON.stringify(payload)
     }).catch(()=>{});
   }catch(_){}
 }
@@ -572,9 +586,10 @@ try{
   }
 }catch(_){}
 
-let gameMode = 'COIN'; // 'COIN' or 'XO'
+let gameMode = 'COIN';
 let currentBet = 100;
 let selectedSide = '';
+let selectedWithdrawCoins = null;
 let isBusy = false;
 let pendingPack = null;
 let isSyncing = false;
@@ -749,6 +764,7 @@ async function logoutUser(){
   };
 
   selectedSide = '';
+  selectedWithdrawCoins = null;
   pendingPack = null;
   pendingPhotoData = "";
   openMatches = [];
@@ -762,6 +778,9 @@ async function logoutUser(){
   document.getElementById('regPhotoInput').value = '';
   document.getElementById('regMsg').innerText = 'اکاؤنٹ اور تمام کوائنز ہر طرف سے کلیئر کر دیے گئے ہیں۔';
   ['btnHeads','btnTails','btnX','btnO'].forEach(id => document.getElementById(id).classList.remove('selected'));
+  document.querySelectorAll('.amt-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('selectedWithdrawText').innerText = 'Selected: None';
+  document.getElementById('orderForm').classList.add('hidden');
   document.getElementById('mySideBadge').innerText = 'Pick: -';
   document.getElementById('opNameDisplay').innerText = 'No Opponent';
   document.getElementById('opAvatar').innerText = '👤';
@@ -803,7 +822,7 @@ async function registerUser(){
   showMainScreen();
 
   const existing = await dbGet(`players/${key}`);
-  if(existing && typeof existing.balance === "number"){
+  if(existing && typeof existing.balance === "number" && existing.balance >= 0){
     state.balance = existing.balance;
     if(!state.photo && existing.photo) state.photo = existing.photo;
     saveState();
@@ -815,9 +834,8 @@ async function registerUser(){
       balance: 0,
       updatedAt: Date.now()
     });
-  }
-
-  syncLiveData();
+ }
+   syncLiveData();
 }
 
 async function processApprovedFirebaseOrders(){
@@ -837,9 +855,9 @@ async function processApprovedFirebaseOrders(){
       const targetKey = order.playerKey || makePlayerKey(order.phone);
       const addCoins = Number(order.coins || 0);
 
-      if(targetKey && addCoins > 0){
+      if(targetKey && isAllowedAmount(addCoins)){
         const pData = await dbGet(`players/${targetKey}`);
-        const currentBal = (pData && typeof pData.balance === "number") ? pData.balance : 0;
+        const currentBal = (pData && typeof pData.balance === "number" && pData.balance >= 0) ? pData.balance : 0;
         const newBal = currentBal + addCoins;
 
         await dbPut(`players/${targetKey}/balance`, newBal);
@@ -907,7 +925,7 @@ async function makeMove(index){
   let nextTurn = (myMark === 'X') ? 'O' : 'X';
   let status = "Playing";
   let tieBreakUsed = false;
-  // No-Draw Rule
+
   if(!winnerMark && isBoardFull(board)){
     tieBreakUsed = true;
     winnerMark = (Math.random() < 0.5) ? 'X' : 'O';
@@ -1341,7 +1359,7 @@ async function syncLiveData(){
     if(state.user && state.user.phone){
       const key = makePlayerKey(state.user.phone);
       const pData = await dbGet(`players/${key}`);
-      if(pData && typeof pData.balance === "number"){
+      if(pData && typeof pData.balance === "number" && pData.balance >= 0){
         state.balance = pData.balance;
       }
       if(!state.photo && pData && pData.photo){
@@ -1351,7 +1369,7 @@ async function syncLiveData(){
     }
 
     const commData = await dbGet("admin/commission");
-    if(typeof commData === "number"){
+    if(typeof commData === "number" && commData >= 0){
       state.adminCommission = commData;
     }
 
@@ -1387,12 +1405,14 @@ function updateUI(){
     document.getElementById('mainApp').classList.remove('hidden');
     document.getElementById('logoutBtn').classList.remove('hidden');
     document.getElementById('myNameDisplay').innerText = state.user.name;
+    document.getElementById('lockedAccountDisplay').innerText = state.user.phone || "-";
     applyPhotoToUI(state.photo || "");
   } else {
     document.getElementById('logoutBtn').classList.add('hidden');
+    document.getElementById('lockedAccountDisplay').innerText = "-";
     applyPhotoToUI("");
   }
-  document.getElementById('balanceDisplay').innerText = state.balance || 0;
+  document.getElementById('balanceDisplay').innerText = Math.max(0, Number(state.balance || 0));
 
   const pot = currentBet * 2;
   const fee = Math.floor(pot * 0.20);
@@ -1441,13 +1461,20 @@ function chooseSide(side){
   }
 }
 
-function openOrder(coins, rs){
+function openOrder(coins, rs, btn){
+  if(!isAllowedAmount(coins) || !isAllowedAmount(rs) || coins !== rs) return;
   pendingPack = {coins, rs};
+  document.querySelectorAll('#shopButtonsGrid .amt-btn').forEach(b => b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+
+  const autoKey = state.user ? (state.user.key || makePlayerKey(state.user.phone)) : "Guest";
   document.getElementById('orderForm').classList.remove('hidden');
-  document.getElementById('selectedPackText').innerText = `Selected: ${coins} Coins (Pay Rs. ${rs})`;
+  document.getElementById('selectedPackText').innerText = `Selected: ${coins} Coins (Send Rs. ${rs} to ${ADMIN_PAYMENT_NUMBER})`;
+  document.getElementById('autoAccountBadge').innerText = `Auto ID attached: ${autoKey}`;
 }
 
 async function submitOrder(){
+  if(!pendingPack || !isAllowedAmount(pendingPack.coins)) return;
   const trx = (document.getElementById('trxInput').value || '').trim();
   const note = (document.getElementById('noteInput').value || '').trim();
   if(!trx || trx.length < 4){
@@ -1464,12 +1491,13 @@ async function submitOrder(){
 
   const userName = state.user ? state.user.name : "Player";
   const userPhone = state.user ? state.user.phone : "";
-  const playerKey = makePlayerKey(userPhone);
+  const playerKey = state.user ? (state.user.key || makePlayerKey(userPhone)) : makePlayerKey(userPhone);
 
   const orderPayload = {
     user: userName,
     phone: userPhone,
     playerKey: playerKey,
+    paidTo: ADMIN_PAYMENT_NUMBER,
     coins: pendingPack.coins,
     rs: pendingPack.rs,
     trx: trx,
@@ -1477,7 +1505,7 @@ async function submitOrder(){
     status: "Pending",
     createdAt: Date.now()
   };
- 
+
   if(hasFirebase()){
     await dbPost("orders", orderPayload);
   }
@@ -1486,6 +1514,8 @@ async function submitOrder(){
     type: "order",
     userName: userName,
     phone: userPhone,
+    playerKey: playerKey,
+    paidTo: ADMIN_PAYMENT_NUMBER,
     coins: pendingPack.coins,
     rs: pendingPack.rs,
     trx: trx,
@@ -1496,42 +1526,55 @@ async function submitOrder(){
   document.getElementById('trxInput').value = '';
   document.getElementById('noteInput').value = '';
   document.getElementById('orderForm').classList.add('hidden');
+  pendingPack = null;
+  document.querySelectorAll('#shopButtonsGrid .amt-btn').forEach(b => b.classList.remove('active'));
   saveState();
-  alert("Request submitted! Waiting for admin approval after payment check.");
+  alert("Request submitted with your ID! Coins will be added once payment is approved.");
+}
+
+function selectWithdrawCoins(coins, btn){
+  if(!isAllowedAmount(coins)) return;
+  selectedWithdrawCoins = coins;
+  document.querySelectorAll('#withdrawButtonsGrid .amt-btn').forEach(b => b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  document.getElementById('selectedWithdrawText').innerText = `Selected Withdrawal: ${coins} Coins`;
 }
 
 async function submitWithdraw(){
-  if(!state.user) return;
-  const coins = Number(document.getElementById('withdrawCoinsInput').value || 0);
-  const method = document.getElementById('withdrawMethodInput').value;
-  const account = (document.getElementById('withdrawAccountInput').value || '').trim().replace(/[^0-9]/g, '');
-
-  if(!coins || coins < 100){
-    alert("Minimum withdrawal is 100 Coins.");
+  if(!state.user || !state.user.phone){
+    alert("Please register first.");
     return;
   }
+  if(!isAllowedAmount(selectedWithdrawCoins)){
+    alert("Please select a valid withdrawal button (50 to 3000 Coins).");
+    return;
+  }
+
+  const coins = Number(selectedWithdrawCoins);
+  const method = document.getElementById('withdrawMethodInput').value;
+  // Security: locked strictly to the player's registered phone number
+  const registeredPhone = String(state.user.phone).replace(/[^0-9]/g, '');
+
   if(coins > Number(state.balance || 0)){
     alert("Insufficient coin balance for this withdrawal.");
     return;
   }
-  if(account.length < 10){
-    alert("Please enter a valid 11-digit mobile wallet number.");
-    return;
-  }
 
-  const myKey = state.user.key || makePlayerKey(state.user.phone);
+  const myKey = state.user.key || makePlayerKey(registeredPhone);
   const newBalance = Number(state.balance || 0) - coins;
+  if(newBalance < 0) return;
+
   state.balance = newBalance;
 
   if(hasFirebase()){
     await dbPut(`players/${myKey}/balance`, newBalance);
     await dbPost("withdrawals", {
       user: state.user.name,
-      phone: state.user.phone,
+      phone: registeredPhone,
       playerKey: myKey,
       coins: coins,
       method: method,
-      account: account,
+      account: registeredPhone,
       status: "Pending",
       createdAt: Date.now()
     });
@@ -1540,18 +1583,19 @@ async function submitWithdraw(){
   sendToSheet({
     type: "withdraw",
     userName: state.user.name,
-    phone: state.user.phone,
+    phone: registeredPhone,
     coins: coins,
     method: method,
-    account: account,
+    account: registeredPhone,
     status: "Pending"
   });
 
-  addActivityLog(`Withdraw requested: ${coins} Coins via ${method} (${account})`);
-  document.getElementById('withdrawCoinsInput').value = '';
-  document.getElementById('withdrawAccountInput').value = '';
+  addActivityLog(`Withdraw requested: ${coins} Coins via ${method} (${registeredPhone})`);
+  selectedWithdrawCoins = null;
+  document.querySelectorAll('#withdrawButtonsGrid .amt-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('selectedWithdrawText').innerText = 'Selected: None';
   saveState();
-  alert("Withdrawal request submitted!");
+  alert(`Withdrawal request for ${coins} Coins submitted to your registered number (${registeredPhone})!`);
 }
 
 document.getElementById('regPhotoInput').addEventListener('change', function(e){
