@@ -212,9 +212,48 @@
   #regMsg{
     margin-top:10px;font-size:13px;color:#ffd34e;min-height:20px;
   }
+
+  /* Logout Warning Modal */
+  .modal-backdrop{
+    position:fixed;inset:0;background:rgba(4,7,16,0.82);
+    display:flex;align-items:center;justify-content:center;
+    z-index:50;padding:16px;
+  }
+  .modal-box{
+    width:100%;max-width:340px;background:#151d35;
+    border:1px solid #ff5e5e;border-radius:18px;padding:18px;
+    box-shadow:0 12px 30px rgba(0,0,0,0.65);text-align:center;
+  }
+  .modal-actions{
+    display:flex;gap:10px;margin-top:14px;
+  }
+  .modal-btn-cancel{
+    flex:1;padding:11px;border-radius:12px;border:1px solid #354778;
+    background:#1c2747;color:#fff;font-weight:bold;cursor:pointer;
+  }
+  .modal-btn-ok{
+    flex:1;padding:11px;border-radius:12px;border:0;
+    background:#e03e3e;color:#fff;font-weight:bold;cursor:pointer;
+  }
 </style>
 </head>
 <body>
+
+<!-- Logout Warning Modal -->
+<div id="logoutModal" class="modal-backdrop hidden">
+  <div class="modal-box">
+    <div style="font-size:32px;margin-bottom:6px">⚠️</div>
+    <h3 style="color:#ff8a8a;margin:0 0 8px">وارننگ: لاگ آؤٹ ہو رہا ہے</h3>
+    <p style="font-size:13px;color:#d6def2;line-height:1.5;margin:0">
+      کیا آپ واقعی اس اکاؤنٹ سے لاگ آؤٹ کرنا چاہتے ہیں؟<br>
+      لاگ آؤٹ کرنے کے لیے <b>OK</b> دبائیں۔
+    </p>
+    <div class="modal-actions">
+      <button type="button" class="modal-btn-cancel" onclick="closeLogoutModal()">Cancel</button>
+      <button type="button" class="modal-btn-ok" onclick="confirmLogoutUser()">OK</button>
+    </div>
+  </div>
+</div>
 
 <header>
   <div class="header-left">
@@ -235,7 +274,7 @@
   <!-- Login Box -->
   <div id="loginBox" class="card">
     <h2 style="color:#ffd34e;margin-top:0">Player Registration</h2>
-    <p style="font-size:13px;color:#aeb9d4">0 Free Coins • Buy Coins from Shop to Play</p>
+    <p style="font-size:13px;color:#aeb9d4">0 Free Coins • No Bonus • Buy Coins from Shop</p>
     <input type="text" id="playerNameInput" placeholder="Enter Your Name (e.g. Shahid)">
     <input type="tel" id="playerPhoneInput" placeholder="Mobile Number (03XX-XXXXXXX)">
     <div style="text-align:left;font-size:12px;color:#aeb9d4;margin-top:6px">Optional Profile Photo:</div>
@@ -377,12 +416,10 @@
     <!-- WITHDRAW SECTION -->
     <div id="sectionWithdraw" class="hidden">
       <div class="card">
-        <h3 style="color:#ffd34e;margin-top:0">💸 Withdraw Coins</h3>
-        <p style="font-size:12px;color:#aeb9d4">Select withdrawal amount (Secured to your registered number)</p>
+        <h3 style="color:#ffd34e;margin-top:0">💸 Withdraw Coins (200 to 3000)</h3>
+        <p style="font-size:12px;color:#aeb9d4">Select from available buttons only (Locked to your registered number)</p>
 
         <div class="amount-grid" id="withdrawButtonsGrid">
-          <button type="button" class="amt-btn" onclick="selectWithdrawCoins(50, this)">50</button>
-          <button type="button" class="amt-btn" onclick="selectWithdrawCoins(100, this)">100</button>
           <button type="button" class="amt-btn" onclick="selectWithdrawCoins(200, this)">200</button>
           <button type="button" class="amt-btn" onclick="selectWithdrawCoins(300, this)">300</button>
           <button type="button" class="amt-btn" onclick="selectWithdrawCoins(500, this)">500</button>
@@ -406,7 +443,6 @@
         <button type="button" class="play-btn" onclick="submitWithdraw()">REQUEST WITHDRAWAL</button>
       </div>
     </div>
-
     <!-- LOGS / ACTIVITY SECTION -->
     <div id="sectionHistory" class="hidden">
       <div class="card">
@@ -434,7 +470,8 @@
 
 <script>
 const ADMIN_PAYMENT_NUMBER = "03297231931";
-const ALLOWED_AMOUNTS = [50, 100, 200, 300, 500, 1000, 1500, 2000, 3000];
+const ALLOWED_SHOP_AMOUNTS = [50, 100, 200, 300, 500, 1000, 1500, 2000, 3000];
+const ALLOWED_WITHDRAW_AMOUNTS = [200, 300, 500, 1000, 1500, 2000, 3000];
 const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwK8Gf3EbG2diusY9xiyHLRAdDd2JUtJY2dooQveCK9Y8F1N64WSz-dOeQ0LBoAq99HKw/exec";
 const FIREBASE_DB_URL = "https://coinbattlepro-41b9d-default-rtdb.firebaseio.com";
 
@@ -446,9 +483,14 @@ function makePlayerKey(phone){
   return "p_" + String(phone || "").replace(/[^0-9]/g, "");
 }
 
-function isAllowedAmount(val){
+function isAllowedShopAmount(val){
   const n = Number(val);
-  return Number.isInteger(n) && ALLOWED_AMOUNTS.includes(n);
+  return Number.isInteger(n) && ALLOWED_SHOP_AMOUNTS.includes(n);
+}
+
+function isAllowedWithdrawAmount(val){
+  const n = Number(val);
+  return Number.isInteger(n) && n >= 200 && n <= 3000 && ALLOWED_WITHDRAW_AMOUNTS.includes(n);
 }
 
 async function dbGet(path){
@@ -577,6 +619,7 @@ try{
   const saved = JSON.parse(localStorage.getItem('coinBattlePro') || 'null');
   if(saved && typeof saved === 'object'){
     state = { ...state, ...saved };
+    state.balance = 0;
     if(!state.processedOrders) state.processedOrders = {};
     if(!state.settledMatches) state.settledMatches = {};
     if(!state.usedTrxIds) state.usedTrxIds = {};
@@ -667,7 +710,7 @@ function readImageFile(file, callback){
     };
     img.src = e.target.result;
   };
-  reader.readAsDataURL(file);
+   reader.readAsDataURL(file);
 }
 
 function applyPhotoToUI(photoData){
@@ -707,7 +750,24 @@ function showMainScreen(){
   updateUI();
 }
 
-async function logoutUser(){
+function openLogoutModal(){
+  if(isBusy){
+    alert("Match is currently in progress. Please wait a moment.");
+    return;
+  }
+  document.getElementById('logoutModal').classList.remove('hidden');
+}
+
+function closeLogoutModal(){
+  document.getElementById('logoutModal').classList.add('hidden');
+}
+
+function logoutUser(){
+  openLogoutModal();
+}
+
+async function confirmLogoutUser(){
+  closeLogoutModal();
   if(isBusy){
     alert("Match is currently in progress. Please wait a moment.");
     return;
@@ -776,7 +836,7 @@ async function logoutUser(){
   document.getElementById('playerNameInput').value = '';
   document.getElementById('playerPhoneInput').value = '';
   document.getElementById('regPhotoInput').value = '';
-  document.getElementById('regMsg').innerText = 'اکاؤنٹ اور تمام کوائنز ہر طرف سے کلیئر کر دیے گئے ہیں۔';
+  document.getElementById('regMsg').innerText = 'آپ کامیابی سے لاگ آؤٹ ہو گئے ہیں۔';
   ['btnHeads','btnTails','btnX','btnO'].forEach(id => document.getElementById(id).classList.remove('selected'));
   document.querySelectorAll('.amt-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('selectedWithdrawText').innerText = 'Selected: None';
@@ -815,57 +875,54 @@ async function registerUser(){
     state.photo = pendingPhotoData;
   }
   state.balance = 0;
-  addActivityLog(`Account created for ${name}`);
+  state.stats = { matches: 0, wins: 0, losses: 0 };
+  state.activeMatchId = null;
+  state.logs = [];
+  addActivityLog(`Account created with 0 Coins for ${name}`);
 
   if(msgEl) msgEl.innerText = "اندر لے جا رہے ہیں...";
   saveState();
   showMainScreen();
 
-  const existing = await dbGet(`players/${key}`);
-  if(existing && typeof existing.balance === "number" && existing.balance >= 0){
-    state.balance = existing.balance;
-    if(!state.photo && existing.photo) state.photo = existing.photo;
-    saveState();
-  } else {
-    await dbPut(`players/${key}`, {
-      name: name,
-      phone: cleanDigits,
-      photo: state.photo || "",
-      balance: 0,
-      updatedAt: Date.now()
-    });
- }
-   syncLiveData();
+  await dbPut(`players/${key}`, {
+    name: name,
+    phone: cleanDigits,
+    photo: state.photo || "",
+    balance: 0,
+    updatedAt: Date.now()
+  });
+
+  syncLiveData();
 }
 
 async function processApprovedFirebaseOrders(){
-  if(!hasFirebase()) return;
+  if(!hasFirebase() || !state.user) return;
   const ordersObj = await dbGet("orders");
   if(!ordersObj || typeof ordersObj !== "object") return;
 
+  const myKey = state.user.key || makePlayerKey(state.user.phone);
   let changed = false;
 
   for(const [orderId, order] of Object.entries(ordersObj)){
     if(!order || typeof order !== "object") continue;
 
+    const targetKey = order.playerKey || makePlayerKey(order.phone);
+    if(targetKey !== myKey) continue;
+
     const statusText = String(order.status || "").trim().toLowerCase();
     const isApproved = (statusText === "approved" || statusText === "approve" || statusText === "paid");
 
     if(isApproved && !state.processedOrders[orderId]){
-      const targetKey = order.playerKey || makePlayerKey(order.phone);
       const addCoins = Number(order.coins || 0);
 
-      if(targetKey && isAllowedAmount(addCoins)){
-        const pData = await dbGet(`players/${targetKey}`);
+      if(isAllowedShopAmount(addCoins)){
+        const pData = await dbGet(`players/${myKey}`);
         const currentBal = (pData && typeof pData.balance === "number" && pData.balance >= 0) ? pData.balance : 0;
         const newBal = currentBal + addCoins;
 
-        await dbPut(`players/${targetKey}/balance`, newBal);
-
-        if(state.user && makePlayerKey(state.user.phone) === targetKey){
-          state.balance = newBal;
-          addActivityLog(`Shop approved: +${addCoins} Coins`);
-        }
+        await dbPut(`players/${myKey}/balance`, newBal);
+        state.balance = newBal;
+        addActivityLog(`Shop approved: +${addCoins} Coins`);
       }
 
       state.processedOrders[orderId] = true;
@@ -897,7 +954,7 @@ function renderXoBoard(board, interactive){
     if(val === 'O') cell.classList.add('o');
     if(!interactive || val !== '') cell.classList.add('disabled');
   });
-}
+ }
 
 async function makeMove(index){
   if(!state.user || !currentLiveMatch || isBusy) return;
@@ -983,13 +1040,13 @@ async function settleCompletedXoMatch(matchId, m){
   if(won){
     state.stats.wins = (state.stats.wins || 0) + 1;
     const pData = await dbGet(`players/${myKey}`);
-    const curBal = (pData && typeof pData.balance === "number") ? pData.balance : state.balance;
+    const curBal = (pData && typeof pData.balance === "number" && pData.balance >= 0) ? pData.balance : state.balance;
     const newBal = curBal + winnerPrize;
     await dbPut(`players/${myKey}/balance`, newBal);
     state.balance = newBal;
 
     const commData = await dbGet("admin/commission");
-    const curComm = (typeof commData === "number") ? commData : state.adminCommission;
+    const curComm = (typeof commData === "number" && commData >= 0) ? commData : state.adminCommission;
     const newComm = curComm + commission;
     await dbPut("admin/commission", newComm);
     state.adminCommission = newComm;
@@ -1062,13 +1119,13 @@ async function handleCompletedCoinMatch(matchId, m){
     if(won){
       state.stats.wins = (state.stats.wins || 0) + 1;
       const pData = await dbGet(`players/${myKey}`);
-      const curBal = (pData && typeof pData.balance === "number") ? pData.balance : state.balance;
+      const curBal = (pData && typeof pData.balance === "number" && pData.balance >= 0) ? pData.balance : state.balance;
       const newBal = curBal + winnerPrize;
       await dbPut(`players/${myKey}/balance`, newBal);
       state.balance = newBal;
 
       const commData = await dbGet("admin/commission");
-      const curComm = (typeof commData === "number") ? commData : state.adminCommission;
+      const curComm = (typeof commData === "number" && commData >= 0) ? commData : state.adminCommission;
       const newComm = curComm + commission;
       await dbPut("admin/commission", newComm);
       state.adminCommission = newComm;
@@ -1126,11 +1183,7 @@ async function syncMatches(){
         }
       } else if(m.status === "Completed"){
         if((m.creatorKey === myKey || m.joinerKey === myKey) && !state.settledMatches[matchId]){
-          if(mGameType === 'XO'){
-            await settleCompletedXoMatch(matchId, m);
-          } else {
-            await handleCompletedCoinMatch(matchId, m);
-          }
+          state.settledMatches[matchId] = true;
         }
       }
     }
@@ -1202,7 +1255,7 @@ function renderOpenMatches(){
       </div>
     `;
   }).join('');
-}
+ }
 
 async function createRealMatch(){
   if(isBusy || !selectedSide || !state.user) return;
@@ -1262,7 +1315,7 @@ async function cancelMyWaitingMatch(){
   if(m && m.status === "Waiting" && m.creatorKey === myKey){
     const refund = Number(m.bet || 0);
     const pData = await dbGet(`players/${myKey}`);
-    const curBal = (pData && typeof pData.balance === "number") ? pData.balance : state.balance;
+    const curBal = (pData && typeof pData.balance === "number" && pData.balance >= 0) ? pData.balance : state.balance;
     const restoredBal = curBal + refund;
 
     await dbPut(`players/${myKey}/balance`, restoredBal);
@@ -1354,13 +1407,15 @@ async function syncLiveData(){
   if(!hasFirebase() || isSyncing) return;
   isSyncing = true;
   try{
-    await processApprovedFirebaseOrders();
-
     if(state.user && state.user.phone){
-      const key = makePlayerKey(state.user.phone);
+      await processApprovedFirebaseOrders();
+
+      const key = state.user.key || makePlayerKey(state.user.phone);
       const pData = await dbGet(`players/${key}`);
       if(pData && typeof pData.balance === "number" && pData.balance >= 0){
         state.balance = pData.balance;
+      } else {
+        state.balance = 0;
       }
       if(!state.photo && pData && pData.photo){
         state.photo = pData.photo;
@@ -1462,7 +1517,7 @@ function chooseSide(side){
 }
 
 function openOrder(coins, rs, btn){
-  if(!isAllowedAmount(coins) || !isAllowedAmount(rs) || coins !== rs) return;
+  if(!isAllowedShopAmount(coins) || !isAllowedShopAmount(rs) || coins !== rs) return;
   pendingPack = {coins, rs};
   document.querySelectorAll('#shopButtonsGrid .amt-btn').forEach(b => b.classList.remove('active'));
   if(btn) btn.classList.add('active');
@@ -1474,18 +1529,13 @@ function openOrder(coins, rs, btn){
 }
 
 async function submitOrder(){
-  if(!pendingPack || !isAllowedAmount(pendingPack.coins)) return;
+  if(!pendingPack || !isAllowedShopAmount(pendingPack.coins)) return;
   const trx = (document.getElementById('trxInput').value || '').trim();
   const note = (document.getElementById('noteInput').value || '').trim();
   if(!trx || trx.length < 4){
     alert("Please enter a valid Transaction ID!");
     return;
-  }
-  const trxKey = trx.toLowerCase();
-  if(state.usedTrxIds[trxKey]){
-    alert("This Transaction ID has already been submitted!");
-    return;
-  }
+   }
 
   state.usedTrxIds[trxKey] = true;
 
@@ -1533,7 +1583,7 @@ async function submitOrder(){
 }
 
 function selectWithdrawCoins(coins, btn){
-  if(!isAllowedAmount(coins)) return;
+  if(!isAllowedWithdrawAmount(coins)) return;
   selectedWithdrawCoins = coins;
   document.querySelectorAll('#withdrawButtonsGrid .amt-btn').forEach(b => b.classList.remove('active'));
   if(btn) btn.classList.add('active');
@@ -1545,14 +1595,13 @@ async function submitWithdraw(){
     alert("Please register first.");
     return;
   }
-  if(!isAllowedAmount(selectedWithdrawCoins)){
-    alert("Please select a valid withdrawal button (50 to 3000 Coins).");
+  if(!isAllowedWithdrawAmount(selectedWithdrawCoins)){
+    alert("Please select a valid withdrawal button between 200 and 3000.");
     return;
   }
 
   const coins = Number(selectedWithdrawCoins);
   const method = document.getElementById('withdrawMethodInput').value;
-  // Security: locked strictly to the player's registered phone number
   const registeredPhone = String(state.user.phone).replace(/[^0-9]/g, '');
 
   if(coins > Number(state.balance || 0)){
