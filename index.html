@@ -201,7 +201,6 @@
     width:100%;padding:12px;border-radius:10px;border:1px solid #354778;
     background:#0c1224;color:#fff;margin:7px 0;font-size:14px;
   }
-  .hidden{display:none}
   .history-strip{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:8px}
   .dot{
     width:26px;height:26px;border-radius:50%;font-size:11px;font-weight:bold;
@@ -235,6 +234,8 @@
     flex:1;padding:11px;border-radius:12px;border:0;
     background:#e03e3e;color:#fff;font-weight:bold;cursor:pointer;
   }
+
+  .hidden{display:none !important}
 </style>
 </head>
 <body>
@@ -249,8 +250,8 @@
       لاگ آؤٹ کرنے کے لیے <b>OK</b> دبائیں۔
     </p>
     <div class="modal-actions">
-      <button type="button" class="modal-btn-cancel" onclick="closeLogoutModal()">Cancel</button>
-      <button type="button" class="modal-btn-ok" onclick="confirmLogoutUser()">OK</button>
+      <button type="button" id="cancelLogoutBtn" class="modal-btn-cancel">Cancel</button>
+      <button type="button" id="confirmLogoutBtn" class="modal-btn-ok">OK</button>
     </div>
   </div>
 </div>
@@ -265,7 +266,7 @@
       <span>💰 <span id="balanceDisplay">0</span></span>
       <button type="button" onclick="switchTab('shop')" style="background:#ffd34e;border:0;border-radius:50%;width:21px;height:21px;font-weight:bold;cursor:pointer">+</button>
     </div>
-    <button type="button" id="logoutBtn" class="logout-btn hidden" onclick="logoutUser()">LOGOUT</button>
+    <button type="button" id="logoutBtn" class="logout-btn hidden">LOGOUT</button>
   </div>
 </header>
 
@@ -443,9 +444,10 @@
         <button type="button" class="play-btn" onclick="submitWithdraw()">REQUEST WITHDRAWAL</button>
       </div>
     </div>
+
     <!-- LOGS / ACTIVITY SECTION -->
     <div id="sectionHistory" class="hidden">
-      <div class="card">
+           <div class="card">
         <h3 style="color:#ffd34e;margin-top:0">📜 Player Stats & Activity Logs</h3>
         <div class="stats-row">
           <div class="stat-box">
@@ -686,7 +688,7 @@ function selectGameMode(mode){
 
   renderOpenMatches();
 }
-
+ 
 function readImageFile(file, callback){
   if(!file) return;
   const reader = new FileReader();
@@ -710,7 +712,7 @@ function readImageFile(file, callback){
     };
     img.src = e.target.result;
   };
-   reader.readAsDataURL(file);
+  reader.readAsDataURL(file);
 }
 
 function applyPhotoToUI(photoData){
@@ -744,6 +746,7 @@ function saveState(){
 }
 
 function showMainScreen(){
+  document.getElementById('logoutModal').classList.add('hidden');
   document.getElementById('loginBox').classList.add('hidden');
   document.getElementById('mainApp').classList.remove('hidden');
   document.getElementById('logoutBtn').classList.remove('hidden');
@@ -751,10 +754,6 @@ function showMainScreen(){
 }
 
 function openLogoutModal(){
-  if(isBusy){
-    alert("Match is currently in progress. Please wait a moment.");
-    return;
-  }
   document.getElementById('logoutModal').classList.remove('hidden');
 }
 
@@ -762,48 +761,12 @@ function closeLogoutModal(){
   document.getElementById('logoutModal').classList.add('hidden');
 }
 
-function logoutUser(){
-  openLogoutModal();
-}
-
-async function confirmLogoutUser(){
-  closeLogoutModal();
-  if(isBusy){
-    alert("Match is currently in progress. Please wait a moment.");
-    return;
-  }
+function confirmLogoutUser(){
+  document.getElementById('logoutModal').classList.add('hidden');
 
   const currentUser = state.user;
   const currentBalance = Number(state.balance || 0);
   const currentMatchId = state.activeMatchId;
-
-  if(currentUser && currentUser.phone){
-    const key = currentUser.key || makePlayerKey(currentUser.phone);
-
-    if(currentMatchId){
-      await dbDelete(`matches/${currentMatchId}`);
-    }
-
-    const matchesObj = await dbGet("matches");
-    if(matchesObj && typeof matchesObj === "object"){
-      for(const [mId, m] of Object.entries(matchesObj)){
-        if(m && m.creatorKey === key && m.status === "Waiting"){
-          await dbDelete(`matches/${mId}`);
-        }
-      }
-    }
-
-    await dbDelete(`players/${key}`);
-
-    sendToSheet({
-      type: "account_deleted_logout",
-      userName: currentUser.name,
-      phone: currentUser.phone,
-      playerKey: key,
-      clearedCoins: currentBalance,
-      status: "DELETED_ON_LOGOUT"
-    });
-  }
 
   try{
     localStorage.removeItem('coinBattlePro');
@@ -852,6 +815,20 @@ async function confirmLogoutUser(){
   document.getElementById('loginBox').classList.remove('hidden');
 
   updateUI();
+
+  if(currentUser && currentUser.phone){
+    const key = currentUser.key || makePlayerKey(currentUser.phone);
+    if(currentMatchId) dbDelete(`matches/${currentMatchId}`);
+    dbDelete(`players/${key}`);
+    sendToSheet({
+      type: "account_deleted_logout",
+      userName: currentUser.name,
+      phone: currentUser.phone,
+      playerKey: key,
+      clearedCoins: currentBalance,
+      status: "DELETED_ON_LOGOUT"
+    });
+  }
 }
 
 async function registerUser(){
@@ -954,7 +931,7 @@ function renderXoBoard(board, interactive){
     if(val === 'O') cell.classList.add('o');
     if(!interactive || val !== '') cell.classList.add('disabled');
   });
- }
+}
 
 async function makeMove(index){
   if(!state.user || !currentLiveMatch || isBusy) return;
@@ -1050,7 +1027,7 @@ async function settleCompletedXoMatch(matchId, m){
     const newComm = curComm + commission;
     await dbPut("admin/commission", newComm);
     state.adminCommission = newComm;
-
+ 
     soundWin();
     document.getElementById('status').innerText = m.tieBreakUsed
       ? `⚡ Tie-Breaker Win! You Won +${winnerPrize} Coins vs ${opName}!`
@@ -1255,7 +1232,7 @@ function renderOpenMatches(){
       </div>
     `;
   }).join('');
- }
+}
 
 async function createRealMatch(){
   if(isBusy || !selectedSide || !state.user) return;
@@ -1327,8 +1304,8 @@ async function cancelMyWaitingMatch(){
   state.activeMatchId = null;
   saveState();
   await syncMatches();
-}
-
+ }
+ 
 async function joinRealMatch(matchId){
   if(isBusy || !state.user) return;
   const m = await dbGet(`matches/${matchId}`);
@@ -1463,7 +1440,9 @@ function updateUI(){
     document.getElementById('lockedAccountDisplay').innerText = state.user.phone || "-";
     applyPhotoToUI(state.photo || "");
   } else {
+    document.getElementById('mainApp').classList.add('hidden');
     document.getElementById('logoutBtn').classList.add('hidden');
+    document.getElementById('loginBox').classList.remove('hidden');
     document.getElementById('lockedAccountDisplay').innerText = "-";
     applyPhotoToUI("");
   }
@@ -1535,7 +1514,12 @@ async function submitOrder(){
   if(!trx || trx.length < 4){
     alert("Please enter a valid Transaction ID!");
     return;
-   }
+  }
+  const trxKey = trx.toLowerCase();
+  if(state.usedTrxIds[trxKey]){
+    alert("This Transaction ID has already been submitted!");
+    return;
+  }
 
   state.usedTrxIds[trxKey] = true;
 
@@ -1668,8 +1652,12 @@ document.getElementById('changePhotoInput').addEventListener('change', async fun
   });
 });
 
+document.getElementById('logoutBtn').addEventListener('click', openLogoutModal);
+document.getElementById('cancelLogoutBtn').addEventListener('click', closeLogoutModal);
+document.getElementById('confirmLogoutBtn').addEventListener('click', confirmLogoutUser);
 document.getElementById('enterArenaBtn').addEventListener('click', registerUser);
 
+document.getElementById('logoutModal').classList.add('hidden');
 updateUI();
 if(state.user && state.user.name){
   syncLiveData();
