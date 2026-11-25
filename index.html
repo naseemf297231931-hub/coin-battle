@@ -7,71 +7,151 @@
 <style>
   *{box-sizing:border-box;user-select:none}
   body{
-    margin:0;background:radial-gradient(circle at top,#162040,#070a14);
-    color:#fff;font-family:'Segoe UI',Arial,sans-serif;text-align:center;
-    min-height:100vh;padding-bottom:44px;
+    margin:0;
+    background:radial-gradient(circle at top left,#241b4d 0%,#121b3d 42%,#070a14 100%);
+    color:#f5f7ff;
+    font-family:'Segoe UI',Arial,sans-serif;
+    text-align:center;
+    min-height:100vh;
+    padding-bottom:58px;
   }
+
   header{
-    padding:12px 14px;background:rgba(21,29,53,0.96);
-    border-bottom:1px solid #2b3960;display:flex;
-    justify-content:space-between;align-items:center;
-    position:sticky;top:0;z-index:10;gap:6px;
+    padding:11px 12px;
+    background:rgba(16,22,46,0.94);
+    border-bottom:1px solid rgba(139,165,255,0.22);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    position:sticky;top:0;z-index:15;gap:6px;
+    backdrop-filter:blur(10px);
   }
-  .header-left{display:flex;align-items:center;gap:8px}
-  .header-right{display:flex;align-items:center;gap:6px}
+  .header-left{display:flex;align-items:center;gap:7px}
+  .header-right{display:flex;align-items:center;gap:5px}
   .hdr-avatar{
     width:32px;height:32px;border-radius:50%;object-fit:cover;
-    border:1.5px solid #ffd34e;background:#1a2440;
+    border:2px solid #ff9ecd;background:#1c2547;
   }
-  .logo{font-size:16px;font-weight:900;color:#ffd34e;letter-spacing:0.5px}
+  .logo{
+    font-size:15px;font-weight:900;
+    background:linear-gradient(90deg,#ffd34e,#ff8ec7,#7be9ff);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    letter-spacing:0.4px;
+  }
   .wallet-pill{
-    background:#0c1224;border:1px solid #ffd34e;
-    padding:5px 10px;border-radius:20px;font-weight:bold;
-    color:#ffd34e;display:flex;align-items:center;gap:5px;font-size:13px;
+    background:#0c1226;border:1px solid #ffd34e;
+    padding:5px 9px;border-radius:20px;font-weight:bold;
+    color:#ffd34e;display:flex;align-items:center;gap:5px;font-size:12px;
+  }
+  .plus-btn{
+    background:linear-gradient(135deg,#ffd34e,#ff8ec7);
+    color:#111;border:0;border-radius:50%;
+    width:20px;height:20px;font-weight:900;cursor:pointer;
+  }
+  .icon-btn{
+    background:#192345;border:1px solid #394d84;color:#ffe082;
+    padding:6px 8px;border-radius:11px;font-size:12px;font-weight:bold;cursor:pointer;
   }
   .logout-btn{
-    background:#2a141c;border:1px solid #ff5e5e;color:#ff8a8a;
-    padding:6px 9px;border-radius:12px;font-size:11px;font-weight:bold;
-    cursor:pointer;
+    background:#2d1422;border:1px solid #ff6b8b;color:#ff9ab2;
+    padding:6px 8px;border-radius:11px;font-size:11px;font-weight:bold;cursor:pointer;
   }
+
   .container{max-width:440px;margin:auto;padding:14px}
+  .brand-heading{color:#ffd34e;margin-top:0}
+  .sub-muted{font-size:12px;color:#b8c4e8}
+  .field-label{text-align:left;font-size:12px;color:#b8c4e8;margin-top:6px}
+  .step-title{font-size:13px;color:#c5d1f2;margin-top:4px}
+  .mint-text{color:#4ef2a1}
+  .coral-text{color:#ff7e9c}
+
   .nav-tabs{
     display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:12px;
-    background:#11182e;padding:6px;border-radius:14px;border:1px solid #243154;
+    background:rgba(16,23,48,0.92);padding:6px;border-radius:16px;
+    border:1px solid rgba(139,165,255,0.22);
   }
   .tab{
-    padding:9px 4px;border:0;border-radius:10px;
-    background:transparent;color:#9aa8cc;font-weight:bold;cursor:pointer;font-size:12px;
+    padding:9px 4px;border:0;border-radius:11px;
+    background:transparent;color:#9fb0db;font-weight:bold;cursor:pointer;font-size:12px;
+    transition:all 0.2s ease;
   }
-  .tab.active{background:#ffd34e;color:#111}
+  .tab.active{
+    background:linear-gradient(135deg,#ffd34e,#ff8ec7);
+    color:#111;box-shadow:0 4px 12px rgba(255,142,199,0.28);
+  }
 
   .mode-switch{
-    display:flex;gap:8px;margin-bottom:12px;background:#0d1326;
-    padding:6px;border-radius:14px;border:1px solid #2c3b66;
+    display:flex;gap:8px;margin-bottom:12px;background:#0d142b;
+    padding:6px;border-radius:15px;border:1px solid #2e3f70;
   }
   .mode-btn{
-    flex:1;padding:10px;border:0;border-radius:10px;
-    background:#18223d;color:#cfd8f0;font-weight:bold;cursor:pointer;font-size:13px;
+    flex:1;padding:10px;border:0;border-radius:11px;
+    background:#192342;color:#d6e0fa;font-weight:bold;cursor:pointer;font-size:13px;
   }
-  .mode-btn.active{background:#28a745;color:#fff}
+  .mode-btn.active{
+    background:linear-gradient(135deg,#24c6dc,#28a745);
+    color:#fff;box-shadow:0 4px 12px rgba(40,167,69,0.3);
+  }
 
   .card{
-    background:rgba(21,29,53,0.92);border:1px solid #293657;
-    border-radius:18px;padding:16px;margin-bottom:14px;
-    box-shadow:0 8px 24px rgba(0,0,0,0.4);
+    background:rgba(20,28,56,0.92);
+    border:1px solid rgba(142,168,255,0.24);
+    border-radius:20px;padding:16px;margin-bottom:14px;
+    box-shadow:0 10px 26px rgba(0,0,0,0.45);
   }
+  .compact-card{padding:14px}
+  .mini-card{padding:12px}
+
+  .notice-banner{
+    background:rgba(255,193,7,0.15);
+    border:1px solid #ffd34e;color:#ffe89c;
+    border-radius:14px;padding:11px 14px;margin-bottom:12px;
+    font-size:13px;line-height:1.5;font-weight:bold;
+  }
+
+  .arena-strip{
+    display:flex;justify-content:space-between;align-items:center;
+    background:rgba(13,20,43,0.9);border:1px solid #2d3e6e;border-radius:13px;
+    padding:8px 12px;margin-bottom:12px;font-size:12px;color:#c3cff0;
+  }
+  .streak-pill{
+    background:rgba(255,126,182,0.18);border:1px solid #ff8ec7;
+    color:#ffb6d9;padding:3px 9px;border-radius:20px;font-weight:bold;font-size:11px;
+  }
+
   .players{display:flex;justify-content:space-between;align-items:center;gap:10px}
   .player{
-    flex:1;background:#1a2440;padding:12px 6px;border-radius:14px;
-    border:1px solid #2d3c66;
+    flex:1;background:#1a2547;padding:12px 6px;border-radius:16px;
+    border:1.5px solid #2f4073;transition:all 0.25s ease;
+  }
+  .player.turn-glow{
+    border-color:#ffd34e;
+    box-shadow:0 0 18px rgba(255,211,78,0.32);
+    background:#22305c;
   }
   .avatar{font-size:32px;margin-bottom:4px}
   .p-img{
-    width:44px;height:44px;border-radius:50%;object-fit:cover;
-    border:2px solid #ffd34e;margin:0 auto 4px;display:block;
+    width:46px;height:46px;border-radius:50%;object-fit:cover;
+    border:2px solid #ff8ec7;margin:0 auto 4px;display:block;
   }
-  .vs{font-weight:900;color:#ff5e5e;font-size:18px}
-  .badge{font-size:11px;color:#8fa0c7}
+  .vs{
+    font-weight:900;
+    background:linear-gradient(135deg,#ff6b8b,#ffd34e);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    font-size:18px;
+  }
+  .badge{font-size:11px;color:#a5b6e0;margin-top:2px}
+  .photo-link{
+    display:inline-block;margin-top:4px;font-size:11px;
+    color:#ffd34e;cursor:pointer;text-decoration:underline;
+  }
+  .reaction-bubble{margin-top:6px;min-height:20px;font-size:17px;font-weight:bold}
+  .reaction-bar{display:flex;justify-content:center;gap:8px;margin-top:10px}
+  .react-btn{
+    background:#182240;border:1px solid #354980;color:#fff;
+    padding:6px 11px;border-radius:20px;font-size:14px;cursor:pointer;
+  }
+  .react-btn:active{transform:scale(0.92)}
 
   /* 3D Realistic Coin */
   .stage{
@@ -80,8 +160,7 @@
   }
   .coin-3d{
     width:110px;height:110px;position:relative;
-    transform-style:preserve-3d;
-    transition:transform 0.2s;
+    transform-style:preserve-3d;transition:transform 0.2s;
   }
   .face{
     position:absolute;width:100%;height:100%;border-radius:50%;
@@ -117,89 +196,124 @@
   .bet-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}
   .amount-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
   .bet-btn,.amt-btn{
-    background:#1c2747;color:#fff;border:1px solid #324475;
-    padding:10px 4px;border-radius:10px;font-weight:bold;cursor:pointer;font-size:13px;
+    background:#1c284d;color:#fff;border:1px solid #354a82;
+    padding:10px 4px;border-radius:11px;font-weight:bold;cursor:pointer;font-size:13px;
   }
-  .bet-btn.active,.amt-btn.active{background:#28a745;border-color:#5ce07a;color:#fff}
+  .bet-btn.active,.amt-btn.active{
+    background:linear-gradient(135deg,#2ecc71,#218838);
+    border-color:#6ef088;color:#fff;
+  }
 
   .side-btns{display:flex;gap:10px;margin:10px 0}
   .choice{
-    flex:1;padding:12px;border-radius:12px;border:2px solid #2f3e6b;
-    background:#1b2542;color:#fff;font-weight:bold;font-size:13px;cursor:pointer;
+    flex:1;padding:12px;border-radius:13px;border:2px solid #314375;
+    background:#1a2445;color:#fff;font-weight:bold;font-size:13px;cursor:pointer;
   }
-  .choice.selected{border-color:#ffd34e;background:#2b385e;color:#ffd34e}
+  .choice.selected{
+    border-color:#ffd34e;background:#2b3863;color:#ffd34e;
+    box-shadow:0 0 12px rgba(255,211,78,0.2);
+  }
 
   .pool-box{
-    background:#0d1326;border-radius:12px;padding:10px;
-    font-size:12px;color:#aeb9d4;margin-bottom:10px;
-    border:1px dashed #344573;
+    background:#0d142b;border-radius:12px;padding:10px;
+    font-size:12px;color:#b8c5e6;margin-bottom:10px;
+    border:1px dashed #394e87;
   }
-  .pool-box b{color:#4cd964}
-  .pool-box span{color:#ff7b7b}
+  .pool-box b{color:#4ef2a1}
+  .pool-box span{color:#ff7e9c}
 
   /* Tic-Tac-Toe Board */
   .xo-board{
     display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
-    max-width:260px;margin:10px auto;
+    max-width:264px;margin:10px auto;
   }
   .xo-cell{
-    height:74px;background:#0d1326;border:2px solid #324475;
-    border-radius:14px;font-size:32px;font-weight:900;
+    height:74px;background:#0d142b;border:2px solid #354a82;
+    border-radius:15px;font-size:32px;font-weight:900;
     display:flex;align-items:center;justify-content:center;
-    cursor:pointer;transition:transform 0.12s, background 0.15s;
+    cursor:pointer;transition:transform 0.12s, background 0.15s, box-shadow 0.2s;
   }
   .xo-cell:active{transform:scale(0.95)}
-  .xo-cell.x{color:#ffd34e;border-color:#ffd34e;background:#1d2540}
-  .xo-cell.o{color:#5ce07a;border-color:#5ce07a;background:#142829}
+  .xo-cell.x{color:#ffd34e;border-color:#ffd34e;background:#1f2847}
+  .xo-cell.o{color:#67f5b4;border-color:#67f5b4;background:#132c30}
+  .xo-cell.win-cell{
+    border-color:#ff8ec7;background:#331d38;
+    box-shadow:0 0 16px rgba(255,142,199,0.65);transform:scale(1.04);
+  }
   .xo-cell.disabled{cursor:default}
 
   .play-btn{
-    width:100%;padding:14px;border:0;border-radius:14px;
-    background:linear-gradient(135deg,#ffd34e,#f5a623);
+    width:100%;padding:14px;border:0;border-radius:15px;
+    background:linear-gradient(135deg,#ffd34e,#ff8ec7);
     color:#111;font-size:16px;font-weight:900;cursor:pointer;
-    box-shadow:0 4px 15px rgba(255,211,78,0.3);
+    box-shadow:0 6px 18px rgba(255,142,199,0.28);
   }
-  .play-btn:disabled{opacity:0.45;cursor:not-allowed}
+  .play-btn:disabled{opacity:0.45;cursor:not-allowed;box-shadow:none}
 
+  .rematch-btn{
+    width:100%;padding:11px;margin-top:8px;border:1px solid #4ef2a1;
+    border-radius:13px;background:#122e26;color:#6ef5b7;
+    font-weight:bold;cursor:pointer;font-size:13px;
+  }
   .cancel-btn{
-    width:100%;padding:10px;margin-top:8px;border:1px solid #ff5e5e;
-    border-radius:12px;background:#2a141c;color:#ff8a8a;
+    width:100%;padding:10px;margin-top:8px;border:1px solid #ff6b8b;
+    border-radius:13px;background:#2d1422;color:#ff9ab2;
     font-weight:bold;cursor:pointer;
   }
 
-  .mini-btn{
-    background:#1c2747;border:1px solid #354778;color:#ffd34e;
+  .mini-btn,.buy-btn{
+    background:#1b264a;border:1px solid #394e87;color:#ffd34e;
     padding:6px 10px;border-radius:10px;font-size:12px;font-weight:bold;cursor:pointer;
   }
 
-  #status{
-    min-height:26px;margin:8px 0;font-weight:bold;
-    color:#ffd34e;font-size:14px;
-  }
+  #status{min-height:26px;margin:8px 0;font-weight:bold;color:#ffd34e;font-size:14px}
+  #status.urgent{color:#ff7e9c}
+
+  .lobby-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+  .lobby-title{font-size:13px;font-weight:bold;color:#ffd34e}
+  .muted-box{font-size:12px;color:#b8c5e6}
+  .tiny-muted{font-size:12px;color:#9fb0db}
 
   .lobby-item,.log-item{
     display:flex;justify-content:space-between;align-items:center;
-    background:#1a2440;padding:11px;border-radius:12px;margin-bottom:8px;
-    border:1px solid #2e3e6b;text-align:left;gap:8px;font-size:12px;
+    background:#1a2547;padding:11px;border-radius:13px;margin-bottom:8px;
+    border:1px solid #2f4073;text-align:left;gap:8px;font-size:12px;
+  }
+  .bet-tag{
+    display:inline-block;padding:2px 8px;border-radius:8px;font-size:11px;
+    font-weight:bold;background:#263769;color:#ffd34e;margin-left:4px;
   }
 
-  .stats-row{
-    display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;
+  .payment-box{
+    background:#0d142b;border:1px solid #354a82;border-radius:14px;
+    padding:11px;margin-bottom:10px;
   }
-  .stat-box{
-    background:#1a2440;border:1px solid #2d3c66;border-radius:12px;padding:10px 6px;
-  }
+  .payment-note{font-size:12px;color:#b8c5e6;margin-bottom:4px}
+  .payment-row{display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap}
+  .pay-num{color:#ffd34e;font-size:16px}
+  .pay-holder{color:#fff;font-size:12px}
+  .payment-sub{color:#9fb0db;display:block;margin-top:5px}
+  .order-form{margin-top:12px;border-top:1px solid #2f4073;padding-top:12px}
+  .pack-selected{color:#4ef2a1;font-weight:bold;margin-bottom:4px}
+  .auto-id-badge{font-size:11px;color:#b8c5e6;margin-bottom:6px}
+  .withdraw-selected{color:#4ef2a1;font-weight:bold;font-size:13px;margin:6px 0}
+
+  .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+  .stat-box{background:#1a2547;border:1px solid #2f4073;border-radius:13px;padding:10px 6px}
   .stat-box b{display:block;font-size:16px;color:#ffd34e}
-  .stat-box small{font-size:11px;color:#9aa8cc}
+  .stat-box small{font-size:11px;color:#9fb0db}
+
+  .leader-box{margin-top:8px}
+  .leader-title{font-size:13px;font-weight:bold;color:#ff9ecd;text-align:left;margin-bottom:6px}
 
   .locked-box{
-    background:#0d1326;border:1px solid #324475;border-radius:12px;
+    background:#0d142b;border:1px solid #354a82;border-radius:12px;
     padding:10px;margin:8px 0;font-size:13px;color:#ffd34e;font-weight:bold;
   }
 
   input,select{
-    width:100%;padding:12px;border-radius:10px;border:1px solid #354778;
-    background:#0c1224;color:#fff;margin:7px 0;font-size:14px;
+    width:100%;padding:12px;border-radius:11px;border:1px solid #374c85;
+    background:#0c1328;color:#fff;margin:7px 0;font-size:14px;
   }
   .history-strip{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:8px}
   .dot{
@@ -207,32 +321,56 @@
     display:flex;align-items:center;justify-content:center;
   }
   .dot.H,.dot.X{background:#ffd34e;color:#111}
-  .dot.T,.dot.O{background:#cfd6e6;color:#111}
-  #regMsg{
-    margin-top:10px;font-size:13px;color:#ffd34e;min-height:20px;
+  .dot.T,.dot.O{background:#d4ddf2;color:#111}
+  #regMsg{margin-top:10px;font-size:13px;color:#ffd34e;min-height:20px}
+
+  .toast-box{
+    position:fixed;bottom:16px;left:50%;transform:translateX(-50%);
+    background:#19254a;border:1px solid #ff8ec7;color:#fff;
+    padding:10px 16px;border-radius:14px;font-size:13px;font-weight:bold;
+    z-index:80;box-shadow:0 8px 24px rgba(0,0,0,0.65);max-width:90%;
   }
 
-  /* Logout Warning Modal */
   .modal-backdrop{
     position:fixed;inset:0;background:rgba(4,7,16,0.82);
     display:flex;align-items:center;justify-content:center;
     z-index:50;padding:16px;
   }
   .modal-box{
-    width:100%;max-width:340px;background:#151d35;
-    border:1px solid #ff5e5e;border-radius:18px;padding:18px;
+    width:100%;max-width:350px;background:#16203d;
+    border:1px solid #ff6b8b;border-radius:18px;padding:18px;
     box-shadow:0 12px 30px rgba(0,0,0,0.65);text-align:center;
   }
-  .modal-actions{
-    display:flex;gap:10px;margin-top:14px;
+  .big-emoji{font-size:34px;margin-bottom:6px}
+  .danger-title{color:#ff8ea8;margin:0 0 8px}
+  .modal-copy{font-size:13px;color:#dbe4fa;line-height:1.5;margin:0}
+  .forfeit-reason{
+    background:#0c1328;border:1px solid #354a82;border-radius:12px;
+    padding:11px;margin-top:10px;font-size:13px;color:#ffd34e;line-height:1.6;
   }
+  .modal-actions{display:flex;gap:10px;margin-top:14px}
   .modal-btn-cancel{
-    flex:1;padding:11px;border-radius:12px;border:1px solid #354778;
-    background:#1c2747;color:#fff;font-weight:bold;cursor:pointer;
+    flex:1;padding:11px;border-radius:12px;border:1px solid #374c85;
+    background:#1c284d;color:#fff;font-weight:bold;cursor:pointer;
   }
   .modal-btn-ok{
     flex:1;padding:11px;border-radius:12px;border:0;
-    background:#e03e3e;color:#fff;font-weight:bold;cursor:pointer;
+    background:#e03e52;color:#fff;font-weight:bold;cursor:pointer;
+  }
+
+  .freeze-backdrop{
+    position:fixed;inset:0;background:rgba(5,8,18,0.96);
+    display:flex;align-items:center;justify-content:center;
+    z-index:100;padding:18px;
+  }
+  .freeze-box{
+    width:100%;max-width:360px;background:#151f3b;
+    border:2px solid #ff6b8b;border-radius:20px;padding:22px;
+    box-shadow:0 16px 40px rgba(0,0,0,0.8);text-align:center;
+  }
+  .freeze-msg{
+    background:#0c1328;border:1px solid #324475;border-radius:12px;
+    padding:12px;margin-top:12px;font-size:13px;color:#ffe89c;line-height:1.6;
   }
 
   .hidden{display:none !important}
@@ -240,12 +378,40 @@
 </head>
 <body>
 
+<!-- Toast Notification -->
+<div id="toastBox" class="toast-box hidden"></div>
+
+<!-- Freeze / Maintenance Screen -->
+<div id="freezeOverlay" class="freeze-backdrop hidden">
+  <div class="freeze-box">
+    <div class="big-emoji">🛑</div>
+    <h2 class="danger-title">ویب سائٹ عارضی طور پر بند / فریز ہے</h2>
+    <p class="modal-copy">
+      اس وقت سسٹم عارضی طور پر روکا گیا ہے، براہِ مہربانی بعد میں کوشش کریں۔
+    </p>
+    <div id="freezeCustomText" class="freeze-msg hidden"></div>
+  </div>
+</div>
+
+<!-- Loss / Disconnect / Leave Popup -->
+<div id="forfeitPopup" class="modal-backdrop hidden">
+  <div class="modal-box">
+    <div class="big-emoji">💔</div>
+    <h3 class="danger-title">آپ میچ ہار گئے</h3>
+    <p class="modal-copy">آپ کی یہ غلطی تھی:</p>
+    <div id="forfeitReasonText" class="forfeit-reason"></div>
+    <div class="modal-actions">
+      <button type="button" id="closeForfeitPopupBtn" class="modal-btn-ok">ٹھیک ہے</button>
+    </div>
+  </div>
+</div>
+
 <!-- Logout Warning Modal -->
 <div id="logoutModal" class="modal-backdrop hidden">
   <div class="modal-box">
-    <div style="font-size:32px;margin-bottom:6px">⚠️</div>
-    <h3 style="color:#ff8a8a;margin:0 0 8px">وارننگ: لاگ آؤٹ ہو رہا ہے</h3>
-    <p style="font-size:13px;color:#d6def2;line-height:1.5;margin:0">
+    <div class="big-emoji">⚠️</div>
+    <h3 class="danger-title">وارننگ: لاگ آؤٹ ہو رہا ہے</h3>
+    <p class="modal-copy">
       کیا آپ واقعی اس اکاؤنٹ سے لاگ آؤٹ کرنا چاہتے ہیں؟<br>
       لاگ آؤٹ کرنے کے لیے <b>OK</b> دبائیں۔
     </p>
@@ -259,12 +425,13 @@
 <header>
   <div class="header-left">
     <img id="headerAvatarImg" class="hdr-avatar hidden" alt="Profile">
-    <div class="logo">⚔️ BATTLE ARENA</div>
+    <div class="logo">✨ BATTLE ARENA</div>
   </div>
   <div class="header-right">
+    <button type="button" id="soundToggleBtn" class="icon-btn" title="Sound">🔊</button>
     <div class="wallet-pill">
       <span>💰 <span id="balanceDisplay">0</span></span>
-      <button type="button" onclick="switchTab('shop')" style="background:#ffd34e;border:0;border-radius:50%;width:21px;height:21px;font-weight:bold;cursor:pointer">+</button>
+      <button type="button" id="quickShopBtn" class="plus-btn">+</button>
     </div>
     <button type="button" id="logoutBtn" class="logout-btn hidden">LOGOUT</button>
   </div>
@@ -272,13 +439,16 @@
 
 <div class="container">
 
+  <!-- Emergency / Notice Banner -->
+  <div id="globalNoticeBanner" class="notice-banner hidden"></div>
+
   <!-- Login Box -->
   <div id="loginBox" class="card">
-    <h2 style="color:#ffd34e;margin-top:0">Player Registration</h2>
-    <p style="font-size:13px;color:#aeb9d4">0 Free Coins • No Bonus • Buy Coins from Shop</p>
+    <h2 class="brand-heading">Player Registration</h2>
+    <p class="sub-muted">0 Free Coins • No Bonus • Buy Coins from Shop</p>
     <input type="text" id="playerNameInput" placeholder="Enter Your Name (e.g. Shahid)">
     <input type="tel" id="playerPhoneInput" placeholder="Mobile Number (03XX-XXXXXXX)">
-    <div style="text-align:left;font-size:12px;color:#aeb9d4;margin-top:6px">Optional Profile Photo:</div>
+    <div class="field-label">Optional Profile Photo:</div>
     <input type="file" id="regPhotoInput" accept="image/*">
     <button type="button" id="enterArenaBtn" class="play-btn">ENTER ARENA</button>
     <div id="regMsg"></div>
@@ -287,59 +457,72 @@
   <!-- Main App -->
   <div id="mainApp" class="hidden">
     <div class="nav-tabs">
-      <button type="button" class="tab active" id="tabArena" onclick="switchTab('arena')">⚔️ ARENA</button>
-      <button type="button" class="tab" id="tabShop" onclick="switchTab('shop')">🛒 SHOP</button>
-      <button type="button" class="tab" id="tabWithdraw" onclick="switchTab('withdraw')">💸 CASH</button>
-      <button type="button" class="tab" id="tabHistory" onclick="switchTab('history')">📜 LOGS</button>
+      <button type="button" class="tab active" id="tabArena" data-tab="arena">⚔️ ARENA</button>
+      <button type="button" class="tab" id="tabShop" data-tab="shop">🛒 SHOP</button>
+      <button type="button" class="tab" id="tabWithdraw" data-tab="withdraw">💸 CASH</button>
+      <button type="button" class="tab" id="tabHistory" data-tab="history">🏆 RANKS</button>
     </div>
 
     <!-- ARENA SECTION -->
     <div id="sectionArena">
       <div class="mode-switch">
-        <button type="button" class="mode-btn active" id="modeCoinBtn" onclick="selectGameMode('COIN')">🪙 HEADS / TAILS</button>
-        <button type="button" class="mode-btn" id="modeXoBtn" onclick="selectGameMode('XO')">❌⭕ TIC-TAC-TOE</button>
+        <button type="button" class="mode-btn active" id="modeCoinBtn" data-mode="COIN">🪙 HEADS / TAILS</button>
+        <button type="button" class="mode-btn" id="modeXoBtn" data-mode="XO">❌⭕ TIC-TAC-TOE</button>
+      </div>
+
+      <div class="arena-strip">
+        <span>🟢 Open Matches: <b id="openCountBadge" class="mint-text">0</b></span>
+        <span id="streakBadge" class="streak-pill">🔥 Streak: 0</span>
       </div>
 
       <div class="card">
         <div class="players">
-          <div class="player">
+          <div class="player" id="myPlayerCard">
             <div id="myEmojiAvatar" class="avatar">😎</div>
             <img id="myPhotoAvatar" class="p-img hidden" alt="My Photo">
             <b id="myNameDisplay">YOU</b>
             <div class="badge" id="mySideBadge">Pick: -</div>
-            <label for="changePhotoInput" style="display:inline-block;margin-top:5px;font-size:11px;color:#ffd34e;cursor:pointer;text-decoration:underline">📷 Photo</label>
+            <div class="reaction-bubble" id="myReactionBubble"></div>
+            <label for="changePhotoInput" class="photo-link">📷 Photo</label>
             <input type="file" id="changePhotoInput" accept="image/*" class="hidden">
           </div>
           <div class="vs">VS</div>
-          <div class="player">
+          <div class="player" id="opPlayerCard">
             <div class="avatar" id="opAvatar">👤</div>
             <b id="opNameDisplay">No Opponent</b>
             <div class="badge" id="opSideBadge">Pick: -</div>
+            <div class="reaction-bubble" id="opReactionBubble"></div>
           </div>
+        </div>
+        <div class="reaction-bar">
+          <button type="button" class="react-btn" data-emoji="🔥">🔥</button>
+          <button type="button" class="react-btn" data-emoji="💖">💖</button>
+          <button type="button" class="react-btn" data-emoji="😎">😎</button>
+          <button type="button" class="react-btn" data-emoji="🍀">🍀</button>
         </div>
       </div>
 
       <div class="card">
-        <div style="font-size:13px;color:#aeb9d4">1. Select Match Entry Fee (Coins)</div>
-        <div class="bet-grid">
-          <button type="button" class="bet-btn active" onclick="setBet(100,this)">100</button>
-          <button type="button" class="bet-btn" onclick="setBet(250,this)">250</button>
-          <button type="button" class="bet-btn" onclick="setBet(500,this)">500</button>
-          <button type="button" class="bet-btn" onclick="setBet(1000,this)">1000</button>
+        <div class="step-title">1. Select Match Entry Fee (Coins)</div>
+        <div class="bet-grid" id="betButtonsGrid">
+          <button type="button" class="bet-btn active" data-bet="10">10</button>
+          <button type="button" class="bet-btn" data-bet="20">20</button>
+          <button type="button" class="bet-btn" data-bet="50">50</button>
+          <button type="button" class="bet-btn" data-bet="100">100</button>
         </div>
 
         <div class="pool-box">
-          Total Pot: <b id="totalPot">200</b> | Winner Gets (80%): <b id="winPrize">160</b> | Fee (20%): <span id="adminFee">40</span>
+          Total Pot: <b id="totalPot">20</b> | Winner Gets (80%): <b id="winPrize">16</b> | Fee (20%): <span id="adminFee">4</span>
         </div>
 
-        <div style="font-size:13px;color:#aeb9d4">2. Choose Your Side / Symbol</div>
-        <div class="side-btns" id="coinSideBtns">
-          <button type="button" class="choice" id="btnHeads" onclick="chooseSide('HEADS')">👑 HEADS</button>
-          <button type="button" class="choice" id="btnTails" onclick="chooseSide('TAILS')">🦅 TAILS</button>
+        <div class="step-title">2. Choose Your Side / Symbol</div>
+   <div class="side-btns" id="coinSideBtns">
+          <button type="button" class="choice" id="btnHeads" data-side="HEADS">👑 HEADS</button>
+          <button type="button" class="choice" id="btnTails" data-side="TAILS">🦅 TAILS</button>
         </div>
         <div class="side-btns hidden" id="xoSideBtns">
-          <button type="button" class="choice" id="btnX" onclick="chooseSide('X')">❌ PLAY AS X</button>
-          <button type="button" class="choice" id="btnO" onclick="chooseSide('O')">⭕ PLAY AS O</button>
+          <button type="button" class="choice" id="btnX" data-side="X">❌ PLAY AS X</button>
+          <button type="button" class="choice" id="btnO" data-side="O">⭕ PLAY AS O</button>
         </div>
 
         <!-- Coin Stage -->
@@ -352,32 +535,33 @@
 
         <!-- XO Board -->
         <div class="xo-board hidden" id="xoBoard">
-          <div class="xo-cell disabled" onclick="makeMove(0)"></div>
-          <div class="xo-cell disabled" onclick="makeMove(1)"></div>
-          <div class="xo-cell disabled" onclick="makeMove(2)"></div>
-          <div class="xo-cell disabled" onclick="makeMove(3)"></div>
-          <div class="xo-cell disabled" onclick="makeMove(4)"></div>
-          <div class="xo-cell disabled" onclick="makeMove(5)"></div>
-          <div class="xo-cell disabled" onclick="makeMove(6)"></div>
-          <div class="xo-cell disabled" onclick="makeMove(7)"></div>
-          <div class="xo-cell disabled" onclick="makeMove(8)"></div>
+          <div class="xo-cell disabled" data-cell="0"></div>
+          <div class="xo-cell disabled" data-cell="1"></div>
+          <div class="xo-cell disabled" data-cell="2"></div>
+          <div class="xo-cell disabled" data-cell="3"></div>
+          <div class="xo-cell disabled" data-cell="4"></div>
+          <div class="xo-cell disabled" data-cell="5"></div>
+          <div class="xo-cell disabled" data-cell="6"></div>
+          <div class="xo-cell disabled" data-cell="7"></div>
+          <div class="xo-cell disabled" data-cell="8"></div>
         </div>
 
         <div id="status">Choose side & create or join a real match</div>
-        <button type="button" class="play-btn" id="playBtn" onclick="createRealMatch()" disabled>CREATE LIVE MATCH</button>
-        <button type="button" class="cancel-btn hidden" id="cancelMatchBtn" onclick="cancelMyWaitingMatch()">CANCEL WAITING MATCH</button>
+        <button type="button" class="play-btn" id="playBtn" disabled>CREATE LIVE MATCH</button>
+        <button type="button" class="rematch-btn hidden" id="playAgainBtn">⚡ PLAY AGAIN (<span id="againBetLabel">10</span> Coins)</button>
+        <button type="button" class="cancel-btn hidden" id="cancelMatchBtn">CANCEL WAITING MATCH</button>
       </div>
 
-      <div class="card" style="padding:14px">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-          <span style="font-size:13px;font-weight:bold;color:#ffd34e">🟢 Open Real Matches (<span id="lobbyModeLabel">COIN</span>)</span>
-          <button type="button" class="mini-btn" onclick="syncLiveData()">↻ REFRESH</button>
+      <div class="card compact-card">
+        <div class="lobby-header">
+          <span class="lobby-title">🟢 Open Real Matches (<span id="lobbyModeLabel">COIN</span>)</span>
+          <button type="button" class="mini-btn" id="refreshMatchesBtn">↻ REFRESH</button>
         </div>
-        <div id="openMatchesList" style="font-size:13px;color:#aeb9d4">Checking live matches...</div>
+        <div id="openMatchesList" class="muted-box">Checking live matches...</div>
       </div>
 
-      <div class="card" style="padding:12px">
-        <div style="font-size:12px;color:#9aa8cc">Recent Live Results</div>
+      <div class="card mini-card">
+        <div class="tiny-muted">Recent Live Results</div>
         <div class="history-strip" id="historyStrip"></div>
       </div>
     </div>
@@ -385,31 +569,35 @@
     <!-- SHOP SECTION -->
     <div id="sectionShop" class="hidden">
       <div class="card">
-        <h3 style="color:#ffd34e;margin-top:0">🛒 Official Coin Store (1 Rs = 1 Coin)</h3>
-        <p style="font-size:12px;color:#aeb9d4">
-          Easypaisa / JazzCash پر اس نمبر پر رقم بھیجیں:<br>
-          <b style="color:#ffd34e;font-size:15px">03297231931</b> <span style="color:#fff">(Shahid Iqbal)</span><br>
-          <small style="color:#9aa8cc">پیکیج بٹن چن کر Trx ID سینڈ کریں • آپ کی آئی ڈی خود بخود ساتھ جائے گی</small>
-        </p>
-
-        <div class="amount-grid" id="shopButtonsGrid">
-          <button type="button" class="amt-btn" onclick="openOrder(50, 50, this)">50 Rs<br><small>50 Coins</small></button>
-          <button type="button" class="amt-btn" onclick="openOrder(100, 100, this)">100 Rs<br><small>100 Coins</small></button>
-          <button type="button" class="amt-btn" onclick="openOrder(200, 200, this)">200 Rs<br><small>200 Coins</small></button>
-          <button type="button" class="amt-btn" onclick="openOrder(300, 300, this)">300 Rs<br><small>300 Coins</small></button>
-          <button type="button" class="amt-btn" onclick="openOrder(500, 500, this)">500 Rs<br><small>500 Coins</small></button>
-          <button type="button" class="amt-btn" onclick="openOrder(1000, 1000, this)">1000 Rs<br><small>1000 Coins</small></button>
-          <button type="button" class="amt-btn" onclick="openOrder(1500, 1500, this)">1500 Rs<br><small>1500 Coins</small></button>
-          <button type="button" class="amt-btn" onclick="openOrder(2000, 2000, this)">2000 Rs<br><small>2000 Coins</small></button>
-          <button type="button" class="amt-btn" onclick="openOrder(3000, 3000, this)">3000 Rs<br><small>3000 Coins</small></button>
+        <h3 class="brand-heading">🛒 Official Coin Store (1 Rs = 1 Coin)</h3>
+        <div class="payment-box">
+          <div class="payment-note">Easypaisa / JazzCash پر اس نمبر پر رقم بھیجیں:</div>
+          <div class="payment-row">
+            <b class="pay-num">03297231931</b>
+            <span class="pay-holder">(Shahid Iqbal)</span>
+            <button type="button" class="mini-btn" id="copyNumBtn">📋 COPY</button>
+          </div>
+          <small class="payment-sub">پیکیج بٹن چن کر Trx ID سینڈ کریں • آپ کی آئی ڈی خود بخود ساتھ جائے گی</small>
         </div>
 
-        <div id="orderForm" class="hidden" style="margin-top:12px;border-top:1px solid #2e3e6b;padding-top:12px">
-          <div id="selectedPackText" style="color:#4cd964;font-weight:bold;margin-bottom:4px"></div>
-          <div id="autoAccountBadge" style="font-size:11px;color:#aeb9d4;margin-bottom:6px"></div>
+        <div class="amount-grid" id="shopButtonsGrid">
+          <button type="button" class="amt-btn" data-coins="50">50 Rs<br><small>50 Coins</small></button>
+          <button type="button" class="amt-btn" data-coins="100">100 Rs<br><small>100 Coins</small></button>
+          <button type="button" class="amt-btn" data-coins="200">200 Rs<br><small>200 Coins</small></button>
+          <button type="button" class="amt-btn" data-coins="300">300 Rs<br><small>300 Coins</small></button>
+          <button type="button" class="amt-btn" data-coins="500">500 Rs<br><small>500 Coins</small></button>
+          <button type="button" class="amt-btn" data-coins="1000">1000 Rs<br><small>1000 Coins</small></button>
+          <button type="button" class="amt-btn" data-coins="1500">1500 Rs<br><small>1500 Coins</small></button>
+          <button type="button" class="amt-btn" data-coins="2000">2000 Rs<br><small>2000 Coins</small></button>
+          <button type="button" class="amt-btn" data-coins="3000">3000 Rs<br><small>3000 Coins</small></button>
+        </div>
+
+        <div id="orderForm" class="order-form hidden">
+          <div id="selectedPackText" class="pack-selected"></div>
+          <div id="autoAccountBadge" class="auto-id-badge"></div>
           <input type="text" id="trxInput" placeholder="Enter Easypaisa / JazzCash Trx ID">
           <input type="text" id="noteInput" placeholder="Optional Sender Name / Note">
-          <button type="button" class="play-btn" onclick="submitOrder()">SUBMIT PAYMENT PROOF</button>
+          <button type="button" class="play-btn" id="submitOrderBtn">SUBMIT PAYMENT PROOF</button>
         </div>
       </div>
     </div>
@@ -417,20 +605,20 @@
     <!-- WITHDRAW SECTION -->
     <div id="sectionWithdraw" class="hidden">
       <div class="card">
-        <h3 style="color:#ffd34e;margin-top:0">💸 Withdraw Coins (200 to 3000)</h3>
-        <p style="font-size:12px;color:#aeb9d4">Select from available buttons only (Locked to your registered number)</p>
+        <h3 class="brand-heading">💸 Withdraw Coins (200 to 3000)</h3>
+        <p class="sub-muted">Select from available buttons only (Locked to your registered number)</p>
 
         <div class="amount-grid" id="withdrawButtonsGrid">
-          <button type="button" class="amt-btn" onclick="selectWithdrawCoins(200, this)">200</button>
-          <button type="button" class="amt-btn" onclick="selectWithdrawCoins(300, this)">300</button>
-          <button type="button" class="amt-btn" onclick="selectWithdrawCoins(500, this)">500</button>
-          <button type="button" class="amt-btn" onclick="selectWithdrawCoins(1000, this)">1000</button>
-          <button type="button" class="amt-btn" onclick="selectWithdrawCoins(1500, this)">1500</button>
-          <button type="button" class="amt-btn" onclick="selectWithdrawCoins(2000, this)">2000</button>
-          <button type="button" class="amt-btn" onclick="selectWithdrawCoins(3000, this)">3000</button>
+          <button type="button" class="amt-btn" data-wcoins="200">200</button>
+          <button type="button" class="amt-btn" data-wcoins="300">300</button>
+          <button type="button" class="amt-btn" data-wcoins="500">500</button>
+          <button type="button" class="amt-btn" data-wcoins="1000">1000</button>
+          <button type="button" class="amt-btn" data-wcoins="1500">1500</button>
+          <button type="button" class="amt-btn" data-wcoins="2000">2000</button>
+          <button type="button" class="amt-btn" data-wcoins="3000">3000</button>
         </div>
 
-        <div id="selectedWithdrawText" style="color:#4cd964;font-weight:bold;font-size:13px;margin:6px 0">Selected: None</div>
+        <div id="selectedWithdrawText" class="withdraw-selected">Selected: None</div>
 
         <select id="withdrawMethodInput">
           <option value="JazzCash">JazzCash</option>
@@ -441,29 +629,41 @@
           🔒 Registered Payout Number: <span id="lockedAccountDisplay">-</span>
         </div>
 
-        <button type="button" class="play-btn" onclick="submitWithdraw()">REQUEST WITHDRAWAL</button>
+        <button type="button" class="play-btn" id="submitWithdrawBtn">REQUEST WITHDRAWAL</button>
+      </div>
+
+      <div class="card compact-card">
+        <div class="lobby-title" style="margin-bottom:8px">📌 My Withdrawal Status</div>
+        <div id="withdrawStatusList" class="muted-box">No withdrawal requests yet.</div>
       </div>
     </div>
 
-    <!-- LOGS / ACTIVITY SECTION -->
+    <!-- LOGS / LEADERBOARD SECTION -->
     <div id="sectionHistory" class="hidden">
-           <div class="card">
-        <h3 style="color:#ffd34e;margin-top:0">📜 Player Stats & Activity Logs</h3>
+      <div class="card">
+        <h3 class="brand-heading">🏆 Player Stats & Top Arena</h3>
         <div class="stats-row">
           <div class="stat-box">
             <b id="statMatches">0</b>
             <small>Matches</small>
           </div>
           <div class="stat-box">
-            <b id="statWins" style="color:#4cd964">0</b>
+            <b id="statWins" class="mint-text">0</b>
             <small>Wins</small>
           </div>
           <div class="stat-box">
-            <b id="statLosses" style="color:#ff7b7b">0</b>
+            <b id="statLosses" class="coral-text">0</b>
             <small>Losses</small>
           </div>
         </div>
-        <div id="activityLogsList" style="font-size:13px;color:#aeb9d4">No activity recorded yet.</div>
+
+        <div class="leader-box">
+          <div class="leader-title">🌟 Top Players Leaderboard</div>
+          <div id="leaderboardList" class="muted-box">Loading top players...</div>
+        </div>
+
+        <div class="leader-title" style="margin-top:12px">📜 Activity Logs</div>
+        <div id="activityLogsList" class="muted-box">No activity recorded yet.</div>
       </div>
     </div>
 
@@ -474,8 +674,38 @@
 const ADMIN_PAYMENT_NUMBER = "03297231931";
 const ALLOWED_SHOP_AMOUNTS = [50, 100, 200, 300, 500, 1000, 1500, 2000, 3000];
 const ALLOWED_WITHDRAW_AMOUNTS = [200, 300, 500, 1000, 1500, 2000, 3000];
+const TURN_TIMEOUT_MS = 30000;
+const ABSENCE_TIMEOUT_MS = 30000;
 const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwK8Gf3EbG2diusY9xiyHLRAdDd2JUtJY2dooQveCK9Y8F1N64WSz-dOeQ0LBoAq99HKw/exec";
 const FIREBASE_DB_URL = "https://coinbattlepro-41b9d-default-rtdb.firebaseio.com";
+
+let soundEnabled = true;
+let toastTimer = null;
+let actionLock = false;
+
+function runWithClickLock(fn){
+  if(actionLock) return;
+  actionLock = true;
+  Promise.resolve().then(fn).finally(()=>{
+    setTimeout(()=>{ actionLock = false; }, 450);
+  });
+}
+
+function showToast(msg){
+  const el = document.getElementById('toastBox');
+  if(!el) return;
+  el.textContent = msg;
+  el.classList.remove('hidden');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>{ el.classList.add('hidden'); }, 2400);
+}
+
+function toggleSound(){
+  soundEnabled = !soundEnabled;
+  const btn = document.getElementById('soundToggleBtn');
+  if(btn) btn.textContent = soundEnabled ? "🔊" : "🔇";
+  showToast(soundEnabled ? "Sound ON" : "Sound OFF");
+}
 
 function hasFirebase(){
   return Boolean(FIREBASE_DB_URL && FIREBASE_DB_URL.startsWith("https://"));
@@ -495,15 +725,44 @@ function isAllowedWithdrawAmount(val){
   return Number.isInteger(n) && n >= 200 && n <= 3000 && ALLOWED_WITHDRAW_AMOUNTS.includes(n);
 }
 
+function showForfeitPopup(reasonText){
+  const popup = document.getElementById('forfeitPopup');
+  const reasonBox = document.getElementById('forfeitReasonText');
+  if(popup && reasonBox){
+    reasonBox.textContent = reasonText || "آپ گیم چھوڑ کر چلے گئے یا نیٹ/وقت کی وجہ سے میچ مکمل نہ کر سکے، اس لیے آپ ہارے اور آپ کے کوائن کٹ گئے۔";
+    popup.classList.remove('hidden');
+  }
+}
+
+function closeForfeitPopup(){
+  const popup = document.getElementById('forfeitPopup');
+  if(popup) popup.classList.add('hidden');
+}
+
+function copyAdminNumber(){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(ADMIN_PAYMENT_NUMBER).then(()=>{
+      const btn = document.getElementById('copyNumBtn');
+      if(btn){
+        btn.innerText = "✅ COPIED";
+        setTimeout(()=>{ btn.innerText = "📋 COPY"; }, 1800);
+      }
+      showToast("Number copied: " + ADMIN_PAYMENT_NUMBER);
+    }).catch(()=>{
+      showToast("Number: " + ADMIN_PAYMENT_NUMBER);
+    });
+  } else {
+    showToast("Number: " + ADMIN_PAYMENT_NUMBER);
+  }
+}
+
 async function dbGet(path){
   if(!hasFirebase()) return null;
   try{
     const res = await fetch(`${FIREBASE_DB_URL}/${path}.json`);
     if(!res.ok) return null;
     return await res.json();
-  }catch(_){
-    return null;
-  }
+  }catch(_){ return null; }
 }
 
 async function dbPut(path, data){
@@ -516,9 +775,7 @@ async function dbPut(path, data){
     });
     if(!res.ok) return null;
     return await res.json();
-  }catch(_){
-    return null;
-  }
+  }catch(_){ return null; }
 }
 
 async function dbPatch(path, data){
@@ -531,9 +788,7 @@ async function dbPatch(path, data){
     });
     if(!res.ok) return null;
     return await res.json();
-  }catch(_){
-    return null;
-  }
+  }catch(_){ return null; }
 }
 
 async function dbPost(path, data){
@@ -546,9 +801,7 @@ async function dbPost(path, data){
     });
     if(!res.ok) return null;
     return await res.json();
-  }catch(_){
-    return null;
-  }
+  }catch(_){ return null; }
 }
 
 async function dbDelete(path){
@@ -571,6 +824,7 @@ function sendToSheet(payload){
 }
 
 function playTone(freq, type, duration, delay=0){
+  if(!soundEnabled) return;
   try{
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
     if(!AudioContextClass) return;
@@ -589,9 +843,7 @@ function playTone(freq, type, duration, delay=0){
     }, delay);
   }catch(_){}
 }
-function soundFlip(){
-  for(let i=0;i<8;i++) playTone(1200 + (i*80), 'sine', 0.08, i*130);
-}
+function soundFlip(){ for(let i=0;i<8;i++) playTone(1200 + (i*80), 'sine', 0.08, i*130); }
 function soundMove(){ playTone(740, 'sine', 0.08, 0); }
 function soundWin(){
   playTone(523,'triangle',0.15,0);
@@ -611,10 +863,11 @@ let state = {
   processedOrders: {},
   settledMatches: {},
   usedTrxIds: {},
-  stats: { matches: 0, wins: 0, losses: 0 },
+  stats: { matches: 0, wins: 0, losses: 0, streak: 0 },
   activeMatchId: null,
   history: ['H','T','X','O','H'],
-  logs: []
+  logs: [],
+  withdrawHistory: []
 };
 
 try{
@@ -625,23 +878,65 @@ try{
     if(!state.processedOrders) state.processedOrders = {};
     if(!state.settledMatches) state.settledMatches = {};
     if(!state.usedTrxIds) state.usedTrxIds = {};
-    if(!state.stats) state.stats = { matches: 0, wins: 0, losses: 0 };
+    if(!state.stats) state.stats = { matches: 0, wins: 0, losses: 0, streak: 0 };
+    if(typeof state.stats.streak !== "number") state.stats.streak = 0;
     if(!Array.isArray(state.history) || state.history.length === 0) state.history = ['H','T','X','O','H'];
     if(!Array.isArray(state.logs)) state.logs = [];
+    if(!Array.isArray(state.withdrawHistory)) state.withdrawHistory = [];
   }
 }catch(_){}
 
 let gameMode = 'COIN';
-let currentBet = 100;
+let currentBet = 10;
 let selectedSide = '';
 let selectedWithdrawCoins = null;
 let isBusy = false;
 let pendingPack = null;
 let isSyncing = false;
 let openMatches = [];
+let leaderboardRows = [];
 let pendingPhotoData = "";
 let currentLiveMatch = null;
 let lastBoardSnapshot = "";
+let isSiteFrozen = false;
+let lastSeenReactionTs = 0;
+
+function applyAdminControls(adminData){
+  const freezeEl = document.getElementById('freezeOverlay');
+  const freezeMsgEl = document.getElementById('freezeCustomText');
+  const bannerEl = document.getElementById('globalNoticeBanner');
+
+  if(!adminData || typeof adminData !== "object"){
+    isSiteFrozen = false;
+    freezeEl.classList.add('hidden');
+    bannerEl.classList.add('hidden');
+    return;
+  }
+ 
+  isSiteFrozen = Boolean(adminData.maintenance === true || String(adminData.maintenance).toLowerCase() === "true");
+  const noticeText = typeof adminData.noticeMessage === "string" ? adminData.noticeMessage.trim() : "";
+
+  if(isSiteFrozen){
+    freezeEl.classList.remove('hidden');
+    if(noticeText){
+      freezeMsgEl.textContent = noticeText;
+      freezeMsgEl.classList.remove('hidden');
+    } else {
+      freezeMsgEl.textContent = "";
+      freezeMsgEl.classList.add('hidden');
+    }
+  } else {
+    freezeEl.classList.add('hidden');
+  }
+
+  if(!isSiteFrozen && noticeText){
+    bannerEl.textContent = "📢 " + noticeText;
+    bannerEl.classList.remove('hidden');
+  } else {
+    bannerEl.textContent = "";
+    bannerEl.classList.add('hidden');
+  }
+}
 
 const WIN_LINES = [
   [0,1,2],[3,4,5],[6,7,8],
@@ -649,10 +944,11 @@ const WIN_LINES = [
   [0,4,8],[2,4,6]
 ];
 
-function checkWinnerMark(board){
-  for(const [a,b,c] of WIN_LINES){
+function getWinningLine(board){
+  for(const line of WIN_LINES){
+    const [a,b,c] = line;
     if(board[a] && board[a] === board[b] && board[a] === board[c]){
-      return board[a];
+      return line;
     }
   }
   return null;
@@ -662,8 +958,56 @@ function isBoardFull(board){
   return board.every(cell => cell === 'X' || cell === 'O');
 }
 
+function showPlayAgainIfReady(){
+  const btn = document.getElementById('playAgainBtn');
+  const lbl = document.getElementById('againBetLabel');
+  if(!btn || !lbl) return;
+  if(selectedSide && !currentLiveMatch && !state.activeMatchId && !isBusy && !isSiteFrozen){
+    lbl.textContent = currentBet;
+    btn.classList.remove('hidden');
+  } else {
+    btn.classList.add('hidden');
+  }
+}
+
+async function quickPlayAgain(){
+  if(isSiteFrozen || isBusy || !selectedSide || !state.user) return;
+  document.getElementById('playAgainBtn').classList.add('hidden');
+  await createRealMatch();
+}
+
+async function sendQuickReaction(emoji){
+  if(isSiteFrozen || !state.user) return;
+  const myBubble = document.getElementById('myReactionBubble');
+  if(myBubble){
+    myBubble.textContent = emoji;
+    setTimeout(()=>{ if(myBubble.textContent === emoji) myBubble.textContent = ""; }, 2200);
+  }
+  showToast("Reaction " + emoji);
+  if(hasFirebase() && currentLiveMatch && currentLiveMatch.matchId){
+    const myKey = state.user.key || makePlayerKey(state.user.phone);
+    await dbPatch(`matches/${currentLiveMatch.matchId}`, {
+      lastReaction: { senderKey: myKey, emoji: emoji, ts: Date.now() }
+    });
+  }
+}
+
+function handleIncomingReaction(m){
+  if(!m || !m.lastReaction || !state.user) return;
+  const rx = m.lastReaction;
+  if(!rx.ts || rx.ts <= lastSeenReactionTs) return;
+  lastSeenReactionTs = rx.ts;
+  const myKey = state.user.key || makePlayerKey(state.user.phone);
+  if(rx.senderKey === myKey) return;
+  const opBubble = document.getElementById('opReactionBubble');
+  if(opBubble){
+    opBubble.textContent = rx.emoji || "";
+    setTimeout(()=>{ opBubble.textContent = ""; }, 2200);
+  }
+}
+
 function selectGameMode(mode){
-  if(isBusy || currentLiveMatch) return;
+  if(isSiteFrozen || isBusy || currentLiveMatch) return;
   gameMode = mode;
   selectedSide = '';
   lastBoardSnapshot = "";
@@ -678,17 +1022,23 @@ function selectGameMode(mode){
   document.getElementById('xoSideBtns').classList.toggle('hidden', mode !== 'XO');
   document.getElementById('xoBoard').classList.toggle('hidden', mode !== 'XO');
 
+  document.getElementById('myPlayerCard').classList.remove('turn-glow');
+  document.getElementById('opPlayerCard').classList.remove('turn-glow');
+  document.getElementById('playAgainBtn').classList.add('hidden');
+
   ['btnHeads','btnTails','btnX','btnO'].forEach(id => document.getElementById(id).classList.remove('selected'));
   document.getElementById('mySideBadge').innerText = 'Pick: -';
   document.getElementById('opSideBadge').innerText = 'Pick: -';
   document.getElementById('playBtn').disabled = true;
-  document.getElementById('status').innerText = mode === 'COIN'
+  const st = document.getElementById('status');
+  st.classList.remove('urgent');
+  st.innerText = mode === 'COIN'
     ? 'Choose HEADS or TAILS to create or join a Coin match'
     : 'Choose X or O to create or join an XO match';
 
   renderOpenMatches();
 }
- 
+
 function readImageFile(file, callback){
   if(!file) return;
   const reader = new FileReader();
@@ -754,6 +1104,7 @@ function showMainScreen(){
 }
 
 function openLogoutModal(){
+  if(isSiteFrozen) return;
   document.getElementById('logoutModal').classList.remove('hidden');
 }
 
@@ -768,9 +1119,7 @@ function confirmLogoutUser(){
   const currentBalance = Number(state.balance || 0);
   const currentMatchId = state.activeMatchId;
 
-  try{
-    localStorage.removeItem('coinBattlePro');
-  }catch(_){}
+  try{ localStorage.removeItem('coinBattlePro'); }catch(_){}
 
   state = {
     user: null,
@@ -780,10 +1129,11 @@ function confirmLogoutUser(){
     processedOrders: {},
     settledMatches: {},
     usedTrxIds: {},
-    stats: { matches: 0, wins: 0, losses: 0 },
+    stats: { matches: 0, wins: 0, losses: 0, streak: 0 },
     activeMatchId: null,
     history: ['H','T','X','O','H'],
-    logs: []
+    logs: [],
+    withdrawHistory: []
   };
 
   selectedSide = '';
@@ -791,6 +1141,7 @@ function confirmLogoutUser(){
   pendingPack = null;
   pendingPhotoData = "";
   openMatches = [];
+  leaderboardRows = [];
   currentLiveMatch = null;
   lastBoardSnapshot = "";
   applyPhotoToUI("");
@@ -804,6 +1155,7 @@ function confirmLogoutUser(){
   document.querySelectorAll('.amt-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('selectedWithdrawText').innerText = 'Selected: None';
   document.getElementById('orderForm').classList.add('hidden');
+  document.getElementById('playAgainBtn').classList.add('hidden');
   document.getElementById('mySideBadge').innerText = 'Pick: -';
   document.getElementById('opNameDisplay').innerText = 'No Opponent';
   document.getElementById('opAvatar').innerText = '👤';
@@ -832,6 +1184,7 @@ function confirmLogoutUser(){
 }
 
 async function registerUser(){
+  if(isSiteFrozen) return;
   const msgEl = document.getElementById('regMsg');
   const name = (document.getElementById('playerNameInput').value || '').trim();
   const rawPhone = (document.getElementById('playerPhoneInput').value || '').trim();
@@ -852,9 +1205,10 @@ async function registerUser(){
     state.photo = pendingPhotoData;
   }
   state.balance = 0;
-  state.stats = { matches: 0, wins: 0, losses: 0 };
+  state.stats = { matches: 0, wins: 0, losses: 0, streak: 0 };
   state.activeMatchId = null;
   state.logs = [];
+  state.withdrawHistory = [];
   addActivityLog(`Account created with 0 Coins for ${name}`);
 
   if(msgEl) msgEl.innerText = "اندر لے جا رہے ہیں...";
@@ -866,10 +1220,41 @@ async function registerUser(){
     phone: cleanDigits,
     photo: state.photo || "",
     balance: 0,
+    wins: 0,
     updatedAt: Date.now()
   });
 
   syncLiveData();
+}
+
+async function syncPlayerProfileToDb(extra){
+  if(!hasFirebase() || !state.user || !state.user.phone) return;
+  const key = state.user.key || makePlayerKey(state.user.phone);
+  await dbPatch(`players/${key}`, {
+    name: state.user.name,
+    wins: Number((state.stats && state.stats.wins) || 0),
+    streak: Number((state.stats && state.stats.streak) || 0),
+    updatedAt: Date.now(),
+    ...(extra || {})
+  });
+}
+
+async function syncLeaderboard(){
+  if(!hasFirebase()) return;
+  const playersObj = await dbGet("players");
+  if(!playersObj || typeof playersObj !== "object") return;
+  const rows = [];
+  for(const [pkey, p] of Object.entries(playersObj)){
+    if(!p || typeof p !== "object") continue;
+    rows.push({
+      key: pkey,
+      name: p.name || "Player",
+      wins: Number(p.wins || 0),
+      balance: Number(p.balance || 0)
+    });
+  }
+  rows.sort((a,b)=> (b.wins - a.wins) || (b.balance - a.balance));
+  leaderboardRows = rows.slice(0, 5);
 }
 
 async function processApprovedFirebaseOrders(){
@@ -900,6 +1285,7 @@ async function processApprovedFirebaseOrders(){
         await dbPut(`players/${myKey}/balance`, newBal);
         state.balance = newBal;
         addActivityLog(`Shop approved: +${addCoins} Coins`);
+        showToast(`+${addCoins} Coins added!`);
       }
 
       state.processedOrders[orderId] = true;
@@ -908,8 +1294,31 @@ async function processApprovedFirebaseOrders(){
     }
   }
 
-  if(changed){
-    saveState();
+  if(changed){ saveState(); }
+}
+
+async function syncWithdrawStatuses(){
+  if(!hasFirebase() || !state.user) return;
+  const wObj = await dbGet("withdrawals");
+  if(!wObj || typeof wObj !== "object") return;
+  const myKey = state.user.key || makePlayerKey(state.user.phone);
+  const items = [];
+
+  for(const [wid, w] of Object.entries(wObj)){
+    if(!w || typeof w !== "object") continue;
+    const targetKey = w.playerKey || makePlayerKey(w.phone);
+    if(targetKey === myKey){
+      items.push({
+        id: wid,
+        coins: w.coins || 0,
+        method: w.method || "Wallet",
+        account: w.account || state.user.phone,
+        status: w.status || "Pending"
+      });
+    }
+  }
+  if(items.length){
+    state.withdrawHistory = items.reverse();
   }
 }
 
@@ -921,20 +1330,33 @@ function animateCoinVisual(result){
   soundFlip();
 }
 
-function renderXoBoard(board, interactive){
+function renderXoBoard(board, interactive, highlightLine){
+  const winLine = highlightLine || getWinningLine(board);
   const cells = document.querySelectorAll('#xoBoard .xo-cell');
   cells.forEach((cell, idx) => {
     const val = board[idx] || '';
     cell.textContent = val === 'X' ? '❌' : (val === 'O' ? '⭕' : '');
-    cell.classList.remove('x','o','disabled');
+    cell.classList.remove('x','o','disabled','win-cell');
     if(val === 'X') cell.classList.add('x');
     if(val === 'O') cell.classList.add('o');
+    if(winLine && winLine.includes(idx)) cell.classList.add('win-cell');
     if(!interactive || val !== '') cell.classList.add('disabled');
   });
 }
 
+async function touchMyPresenceInActiveXo(){
+  if(!hasFirebase() || !state.user || !currentLiveMatch) return;
+  const myKey = state.user.key || makePlayerKey(state.user.phone);
+  const now = Date.now();
+  if(currentLiveMatch.creatorKey === myKey){
+    await dbPatch(`matches/${currentLiveMatch.matchId}`, { creatorLastSeen: now });
+  } else if(currentLiveMatch.joinerKey === myKey){
+    await dbPatch(`matches/${currentLiveMatch.matchId}`, { joinerLastSeen: now });
+  }
+}
+
 async function makeMove(index){
-  if(!state.user || !currentLiveMatch || isBusy) return;
+  if(isSiteFrozen || !state.user || !currentLiveMatch || isBusy) return;
   const m = currentLiveMatch;
   if(m.gameType !== 'XO' || m.status !== "Playing") return;
 
@@ -945,7 +1367,7 @@ async function makeMove(index){
 
   const myMark = isCreator ? m.creatorSide : m.joinerSide;
   if(m.turnMark !== myMark){
-    alert("Wait for your opponent's turn!");
+    showToast("Wait for opponent's turn!");
     return;
   }
 
@@ -955,7 +1377,8 @@ async function makeMove(index){
   board[index] = myMark;
   soundMove();
 
-  let winnerMark = checkWinnerMark(board);
+  const now = Date.now();
+  let winnerMark = getWinningLine(board) ? myMark : null;
   let nextTurn = (myMark === 'X') ? 'O' : 'X';
   let status = "Playing";
   let tieBreakUsed = false;
@@ -971,12 +1394,15 @@ async function makeMove(index){
   const patchData = {
     board: board,
     turnMark: nextTurn,
+    turnStartedAt: now,
     status: status,
     winnerMark: winnerMark || "",
     tieBreakUsed: tieBreakUsed
   };
+  if(isCreator) patchData.creatorLastSeen = now;
+  if(isJoiner) patchData.joinerLastSeen = now;
   if(status === "Completed"){
-    patchData.completedAt = Date.now();
+    patchData.completedAt = now;
   }
 
   currentLiveMatch = { ...m, ...patchData };
@@ -988,7 +1414,34 @@ async function makeMove(index){
   }
 }
 
-async function settleCompletedXoMatch(matchId, m){
+async function handleDoubleForfeitXo(matchId, m){
+  if(!state.user || state.settledMatches[matchId]) return;
+  const myKey = state.user.key || makePlayerKey(state.user.phone);
+  if(m.creatorKey !== myKey && m.joinerKey !== myKey) return;
+
+  state.settledMatches[matchId] = true;
+  if(state.activeMatchId === matchId) state.activeMatchId = null;
+  currentLiveMatch = null;
+  lastBoardSnapshot = "";
+  renderXoBoard(['','','','','','','','',''], false);
+
+  const bet = Number(m.bet || 0);
+  state.stats.matches = (state.stats.matches || 0) + 1;
+  state.stats.losses = (state.stats.losses || 0) + 1;
+  state.stats.streak = 0;
+  soundLoss();
+  addActivityLog(`Double forfeit (-${bet} Coins): Left/slow net in XO`);
+  await syncPlayerProfileToDb();
+  saveState();
+
+  showForfeitPopup("آپ اور حریف دونوں گیم چھوڑ کر چلے گئے / نیٹ سلو یا غیر حاضری کی وجہ سے میچ مکمل نہ ہو سکا۔ اس غلطی کی وجہ سے آپ ہارے اور آپ کے کوائن کٹ گئے۔");
+  const st = document.getElementById('status');
+  st.classList.add('urgent');
+  st.innerText = "❌ Double Forfeit! Both players lost coins.";
+  showPlayAgainIfReady();
+ }
+ 
+async function handleSingleForfeitXo(matchId, m, loserKey){
   if(!state.user || state.settledMatches[matchId]) return;
   const myKey = state.user.key || makePlayerKey(state.user.phone);
   const isCreator = (m.creatorKey === myKey);
@@ -997,9 +1450,146 @@ async function settleCompletedXoMatch(matchId, m){
 
   state.settledMatches[matchId] = true;
   if(state.activeMatchId === matchId) state.activeMatchId = null;
+  currentLiveMatch = null;
+  lastBoardSnapshot = "";
+  renderXoBoard(['','','','','','','','',''], false);
+
+  const bet = Number(m.bet || 0);
+  const pot = bet * 2;
+  const commission = Math.floor(pot * 0.20);
+  const winnerPrize = pot - commission;
+
+  const opName = isCreator ? (m.joinerName || "Opponent") : (m.creatorName || "Opponent");
+  state.stats.matches = (state.stats.matches || 0) + 1;
+  const st = document.getElementById('status');
+
+  if(loserKey === myKey){
+    state.stats.losses = (state.stats.losses || 0) + 1;
+    state.stats.streak = 0;
+    soundLoss();
+    addActivityLog(`Lost -${bet} XO (Timeout / Left match)`);
+    await syncPlayerProfileToDb();
+    saveState();
+    showForfeitPopup("آپ نے مقررہ وقت پر چال نہیں چلی یا گیم چھوڑ کر چلے گئے / نیٹ سلو رہا۔ اس غلطی کی وجہ سے آپ ہارے اور آپ کے کوائن کٹ گئے۔");
+    st.classList.add('urgent');
+    st.innerText = "❌ You lost due to timeout / leaving match.";
+  } else {
+    state.stats.wins = (state.stats.wins || 0) + 1;
+    state.stats.streak = (state.stats.streak || 0) + 1;
+    const pData = await dbGet(`players/${myKey}`);
+    const curBal = (pData && typeof pData.balance === "number" && pData.balance >= 0) ? pData.balance : state.balance;
+    const newBal = curBal + winnerPrize;
+    await dbPut(`players/${myKey}/balance`, newBal);
+    state.balance = newBal;
+
+    const commData = await dbGet("admin/commission");
+    const curComm = (typeof commData === "number" && commData >= 0) ? commData : state.adminCommission;
+    const newComm = curComm + commission;
+    await dbPut("admin/commission", newComm);
+    state.adminCommission = newComm;
+
+    soundWin();
+    st.classList.remove('urgent');
+    st.innerText = `🎉 ${opName} left/timed out! You Won +${winnerPrize} Coins!`;
+    addActivityLog(`Won +${winnerPrize} XO (Opponent timed out / left)`);
+    await syncPlayerProfileToDb({ balance: newBal });
+    saveState();
+  }
+  showPlayAgainIfReady();
+}
+
+async function checkXoTimeoutOrEscape(matchId, m){
+  if(!hasFirebase() || m.status !== "Playing" || m.gameType !== 'XO') return false;
+  const now = Date.now();
+  const creatorSeen = Number(m.creatorLastSeen || m.startedAt || m.createdAt || now);
+  const joinerSeen = Number(m.joinerLastSeen || m.startedAt || m.createdAt || now);
+  const turnStarted = Number(m.turnStartedAt || m.startedAt || m.createdAt || now);
+
+  const creatorGone = (now - creatorSeen) > ABSENCE_TIMEOUT_MS;
+  const joinerGone = (now - joinerSeen) > ABSENCE_TIMEOUT_MS;
+
+  if(creatorGone && joinerGone){
+    await dbPatch(`matches/${matchId}`, {
+      status: "Completed",
+      forfeitType: "BOTH",
+      loserKey: "BOTH",
+      completedAt: now
+    });
+    await handleDoubleForfeitXo(matchId, { ...m, status: "Completed", forfeitType: "BOTH", loserKey: "BOTH" });
+    return true;
+  }
+
+  if(creatorGone){
+    const winnerKey = m.joinerKey;
+    const winnerMark = (m.creatorSide === 'X') ? 'O' : 'X';
+    await dbPatch(`matches/${matchId}`, {
+      status: "Completed",
+      forfeitType: "SINGLE",
+      loserKey: m.creatorKey,
+      winnerKey: winnerKey,
+      winnerMark: winnerMark,
+      completedAt: now
+    });
+    await handleSingleForfeitXo(matchId, { ...m, status: "Completed", forfeitType: "SINGLE", loserKey: m.creatorKey, winnerKey, winnerMark }, m.creatorKey);
+    return true;
+  }
+
+  if(joinerGone){
+    const winnerKey = m.creatorKey;
+    const winnerMark = m.creatorSide;
+    await dbPatch(`matches/${matchId}`, {
+      status: "Completed",
+      forfeitType: "SINGLE",
+      loserKey: m.joinerKey,
+      winnerKey: winnerKey,
+      winnerMark: winnerMark,
+      completedAt: now
+    });
+    await handleSingleForfeitXo(matchId, { ...m, status: "Completed", forfeitType: "SINGLE", loserKey: m.joinerKey, winnerKey, winnerMark }, m.joinerKey);
+    return true;
+  }
+
+  if((now - turnStarted) > TURN_TIMEOUT_MS){
+    const turnMark = m.turnMark || 'X';
+    const loserKey = (m.creatorSide === turnMark) ? m.creatorKey : m.joinerKey;
+    const winnerKey = (loserKey === m.creatorKey) ? m.joinerKey : m.creatorKey;
+    const winnerMark = (turnMark === 'X') ? 'O' : 'X';
+    await dbPatch(`matches/${matchId}`, {
+      status: "Completed",
+      forfeitType: "TURN_TIMEOUT",
+      loserKey: loserKey,
+      winnerKey: winnerKey,
+      winnerMark: winnerMark,
+      completedAt: now
+    });
+    await handleSingleForfeitXo(matchId, { ...m, status: "Completed", forfeitType: "TURN_TIMEOUT", loserKey, winnerKey, winnerMark }, loserKey);
+    return true;
+  }
+
+  return false;
+}
+
+async function settleCompletedXoMatch(matchId, m){
+  if(!state.user || state.settledMatches[matchId]) return;
+  const myKey = state.user.key || makePlayerKey(state.user.phone);
+  const isCreator = (m.creatorKey === myKey);
+  const isJoiner = (m.joinerKey === myKey);
+  if(!isCreator && !isJoiner) return;
+
+  if(m.forfeitType === "BOTH"){
+    await handleDoubleForfeitXo(matchId, m);
+    return;
+  }
+  if(m.forfeitType === "SINGLE" || m.forfeitType === "TURN_TIMEOUT"){
+    await handleSingleForfeitXo(matchId, m, m.loserKey);
+    return;
+  }
+
+  state.settledMatches[matchId] = true;
+  if(state.activeMatchId === matchId) state.activeMatchId = null;
 
   const board = Array.isArray(m.board) ? m.board : ['','','','','','','','',''];
-  renderXoBoard(board, false);
+  renderXoBoard(board, false, getWinningLine(board));
 
   const pot = Number(m.bet || 0) * 2;
   const commission = Math.floor(pot * 0.20);
@@ -1013,9 +1603,11 @@ async function settleCompletedXoMatch(matchId, m){
   state.history.unshift(winnerMark === 'O' ? 'O' : 'X');
   if(state.history.length > 10) state.history.pop();
   state.stats.matches = (state.stats.matches || 0) + 1;
+  const st = document.getElementById('status');
 
   if(won){
     state.stats.wins = (state.stats.wins || 0) + 1;
+    state.stats.streak = (state.stats.streak || 0) + 1;
     const pData = await dbGet(`players/${myKey}`);
     const curBal = (pData && typeof pData.balance === "number" && pData.balance >= 0) ? pData.balance : state.balance;
     const newBal = curBal + winnerPrize;
@@ -1027,12 +1619,14 @@ async function settleCompletedXoMatch(matchId, m){
     const newComm = curComm + commission;
     await dbPut("admin/commission", newComm);
     state.adminCommission = newComm;
- 
+
     soundWin();
-    document.getElementById('status').innerText = m.tieBreakUsed
+    st.classList.remove('urgent');
+    st.innerText = m.tieBreakUsed
       ? `⚡ Tie-Breaker Win! You Won +${winnerPrize} Coins vs ${opName}!`
       : `🎉 You (${myMark}) Won +${winnerPrize} Coins vs ${opName}!`;
     addActivityLog(`Won +${winnerPrize} XO vs ${opName}`);
+    await syncPlayerProfileToDb({ balance: newBal });
 
     sendToSheet({
       type: "commission",
@@ -1047,13 +1641,17 @@ async function settleCompletedXoMatch(matchId, m){
     });
   } else {
     state.stats.losses = (state.stats.losses || 0) + 1;
+    state.stats.streak = 0;
     soundLoss();
-    document.getElementById('status').innerText = `❌ ${opName} (${winnerMark}) Won vs You (${myMark})!`;
+    st.classList.add('urgent');
+    st.innerText = `❌ ${opName} (${winnerMark}) Won vs You (${myMark})!`;
     addActivityLog(`Lost -${m.bet} XO vs ${opName}`);
+    await syncPlayerProfileToDb();
   }
 
   currentLiveMatch = null;
   saveState();
+  showPlayAgainIfReady();
 }
 
 async function handleCompletedCoinMatch(matchId, m){
@@ -1079,8 +1677,11 @@ async function handleCompletedCoinMatch(matchId, m){
 
   isBusy = true;
   document.getElementById('playBtn').disabled = true;
+  document.getElementById('playAgainBtn').classList.add('hidden');
   document.getElementById('cancelMatchBtn').classList.add('hidden');
-  document.getElementById('status').innerText = `⚔️ Live Coin Battle with ${opName}! Flipping...`;
+  const st = document.getElementById('status');
+  st.classList.remove('urgent');
+  st.innerText = `⚔️ Live Coin Battle with ${opName}! Flipping...`;
   animateCoinVisual(result);
 
   state.settledMatches[matchId] = true;
@@ -1095,6 +1696,7 @@ async function handleCompletedCoinMatch(matchId, m){
 
     if(won){
       state.stats.wins = (state.stats.wins || 0) + 1;
+      state.stats.streak = (state.stats.streak || 0) + 1;
       const pData = await dbGet(`players/${myKey}`);
       const curBal = (pData && typeof pData.balance === "number" && pData.balance >= 0) ? pData.balance : state.balance;
       const newBal = curBal + winnerPrize;
@@ -1108,8 +1710,10 @@ async function handleCompletedCoinMatch(matchId, m){
       state.adminCommission = newComm;
 
       soundWin();
-      document.getElementById('status').innerText = `🎉 ${result}! You Won +${winnerPrize} Coins vs ${opName}!`;
+      st.classList.remove('urgent');
+      st.innerText = `🎉 ${result}! You Won +${winnerPrize} Coins vs ${opName}!`;
       addActivityLog(`Won +${winnerPrize} Coin vs ${opName} (${result})`);
+      await syncPlayerProfileToDb({ balance: newBal });
 
       sendToSheet({
         type: "commission",
@@ -1124,14 +1728,18 @@ async function handleCompletedCoinMatch(matchId, m){
       });
     } else {
       state.stats.losses = (state.stats.losses || 0) + 1;
+      state.stats.streak = 0;
       soundLoss();
-      document.getElementById('status').innerText = `❌ ${result}! ${opName} Won vs You!`;
+      st.classList.add('urgent');
+      st.innerText = `❌ ${result}! ${opName} Won vs You!`;
       addActivityLog(`Lost -${m.bet} Coin vs ${opName} (${result})`);
+      await syncPlayerProfileToDb();
     }
 
     saveState();
     isBusy = false;
-    if(selectedSide && gameMode === 'COIN') document.getElementById('playBtn').disabled = false;
+    if(selectedSide && gameMode === 'COIN' && !isSiteFrozen) document.getElementById('playBtn').disabled = false;
+    showPlayAgainIfReady();
   }, 1550);
 }
 
@@ -1147,19 +1755,29 @@ async function syncMatches(){
     for(const [matchId, m] of Object.entries(matchesObj)){
       if(!m || typeof m !== "object") continue;
       const mGameType = m.gameType || 'COIN';
+      const fullMatch = { matchId, ...m, gameType: mGameType };
+
+      if((m.creatorKey === myKey || m.joinerKey === myKey) && m.lastReaction){
+        handleIncomingReaction(fullMatch);
+      }
 
       if(m.status === "Waiting"){
         if(m.creatorKey === myKey){
-          myWaitingMatch = { matchId, ...m, gameType: mGameType };
+          myWaitingMatch = fullMatch;
         } else if(mGameType === gameMode){
-          list.push({ matchId, ...m, gameType: mGameType });
+          list.push(fullMatch);
         }
       } else if(m.status === "Playing" && mGameType === 'XO'){
         if(m.creatorKey === myKey || m.joinerKey === myKey){
-          activeXoPlaying = { matchId, ...m, gameType: 'XO' };
+          const handled = await checkXoTimeoutOrEscape(matchId, fullMatch);
+          if(!handled){
+            activeXoPlaying = fullMatch;
+          }
         }
       } else if(m.status === "Completed"){
-        if((m.creatorKey === myKey || m.joinerKey === myKey) && !state.settledMatches[matchId]){
+        if((m.creatorKey === myKey || m.joinerKey === myKey) && mGameType === 'XO' && !state.settledMatches[matchId]){
+          await settleCompletedXoMatch(matchId, fullMatch);
+        } else if((m.creatorKey === myKey || m.joinerKey === myKey) && !state.settledMatches[matchId]){
           state.settledMatches[matchId] = true;
         }
       }
@@ -1167,45 +1785,66 @@ async function syncMatches(){
   }
 
   openMatches = list;
+  const cntBadge = document.getElementById('openCountBadge');
+  if(cntBadge) cntBadge.textContent = openMatches.length;
+
+  const myCard = document.getElementById('myPlayerCard');
+  const opCard = document.getElementById('opPlayerCard');
+  const st = document.getElementById('status');
 
   if(activeXoPlaying){
     if(gameMode !== 'XO') selectGameMode('XO');
     currentLiveMatch = activeXoPlaying;
     state.activeMatchId = activeXoPlaying.matchId;
+    await touchMyPresenceInActiveXo();
+
     const isCreator = (activeXoPlaying.creatorKey === myKey);
     const myMark = isCreator ? activeXoPlaying.creatorSide : activeXoPlaying.joinerSide;
     const opName = isCreator ? (activeXoPlaying.joinerName || "Opponent") : (activeXoPlaying.creatorName || "Opponent");
     const board = Array.isArray(activeXoPlaying.board) ? activeXoPlaying.board : ['','','','','','','','',''];
     const isMyTurn = (activeXoPlaying.turnMark === myMark);
+    const secLeft = Math.max(0, Math.ceil((TURN_TIMEOUT_MS - (Date.now() - Number(activeXoPlaying.turnStartedAt || activeXoPlaying.startedAt || Date.now()))) / 1000));
+
+    myCard.classList.toggle('turn-glow', isMyTurn);
+    opCard.classList.toggle('turn-glow', !isMyTurn);
 
     document.getElementById('opNameDisplay').innerText = opName;
     document.getElementById('opAvatar').innerText = "🧑";
     document.getElementById('mySideBadge').innerText = `Pick: ${myMark}`;
     document.getElementById('opSideBadge').innerText = `Pick: ${myMark === 'X' ? 'O' : 'X'}`;
     document.getElementById('cancelMatchBtn').classList.add('hidden');
+    document.getElementById('playAgainBtn').classList.add('hidden');
     document.getElementById('playBtn').disabled = true;
 
     const snap = JSON.stringify(board) + "_" + activeXoPlaying.turnMark;
     if(snap !== lastBoardSnapshot){
       lastBoardSnapshot = snap;
-      renderXoBoard(board, isMyTurn);
+      renderXoBoard(board, isMyTurn && !isSiteFrozen);
     }
-    document.getElementById('status').innerText = isMyTurn
-      ? `⚔️ Your Turn (${myMark})! Tap a box`
-      : `⏳ Waiting for ${opName} (${activeXoPlaying.turnMark}) to move...`;
+    st.classList.toggle('urgent', secLeft <= 7);
+    st.innerText = isMyTurn
+      ? `⚔️ Your Turn (${myMark})! (${secLeft}s left)`
+      : `⏳ Waiting for ${opName} (${activeXoPlaying.turnMark})... (${secLeft}s)`;
   } else if(myWaitingMatch){
+    myCard.classList.remove('turn-glow');
+    opCard.classList.remove('turn-glow');
     currentLiveMatch = null;
     state.activeMatchId = myWaitingMatch.matchId;
     document.getElementById('cancelMatchBtn').classList.remove('hidden');
+    document.getElementById('playAgainBtn').classList.add('hidden');
     document.getElementById('playBtn').disabled = true;
-    document.getElementById('status').innerText = `⏳ Waiting for opponent (${myWaitingMatch.bet} Coins | ${myWaitingMatch.creatorSide})...`;
+    st.classList.remove('urgent');
+    st.innerText = `⏳ Waiting for opponent (${myWaitingMatch.bet} Coins | ${myWaitingMatch.creatorSide})...`;
   } else {
+    myCard.classList.remove('turn-glow');
+    opCard.classList.remove('turn-glow');
     currentLiveMatch = null;
     state.activeMatchId = null;
     document.getElementById('cancelMatchBtn').classList.add('hidden');
-    if(!isBusy && selectedSide){
+    if(!isBusy && selectedSide && !isSiteFrozen){
       document.getElementById('playBtn').disabled = false;
     }
+    showPlayAgainIfReady();
   }
 
   renderOpenMatches();
@@ -1225,46 +1864,50 @@ function renderOpenMatches(){
     return `
       <div class="lobby-item">
         <div>
-          <b style="color:#ffd34e">${m.creatorName || "Player"}</b> • <b>${m.bet} Coins</b><br>
+          <b style="color:#ffd34e">${m.creatorName || "Player"}</b> <span class="bet-tag">${m.bet} Coins</span><br>
           <small>Creator: ${m.creatorSide} (You get ${oppPick})</small>
         </div>
-        <button type="button" class="buy-btn" onclick="joinRealMatch('${m.matchId}')">JOIN</button>
+        <button type="button" class="buy-btn" data-join-id="${m.matchId}">JOIN</button>
       </div>
     `;
   }).join('');
-}
-
+ }
+ 
 async function createRealMatch(){
-  if(isBusy || !selectedSide || !state.user) return;
+  if(isSiteFrozen || isBusy || !selectedSide || !state.user) return;
   if(state.activeMatchId){
-    alert("You already have an active match. Cancel it first or wait.");
+    showToast("You already have an active match!");
     return;
   }
   if(state.balance < currentBet){
-    alert("Insufficient Coins! Please buy coins from the Shop.");
+    showToast("Insufficient Coins! Buy from Shop.");
     switchTab('shop');
     return;
   }
 
   const myKey = state.user.key || makePlayerKey(state.user.phone);
   const newBalance = state.balance - currentBet;
+  const now = Date.now();
 
   state.balance = newBalance;
   addActivityLog(`Created ${currentBet} Coins ${gameMode} match (${selectedSide})`);
+  showToast(`Match created (${currentBet} Coins)`);
 
   const payload = {
     gameType: gameMode,
     creatorKey: myKey,
     creatorName: state.user.name,
     creatorSide: selectedSide,
+    creatorLastSeen: now,
     bet: currentBet,
     status: "Waiting",
-    createdAt: Date.now()
+    createdAt: now
   };
 
   if(gameMode === 'XO'){
     payload.board = ['','','','','','','','',''];
     payload.turnMark = 'X';
+    payload.turnStartedAt = now;
   }
 
   if(hasFirebase()){
@@ -1284,7 +1927,7 @@ async function createRealMatch(){
 }
 
 async function cancelMyWaitingMatch(){
-  if(!state.activeMatchId || !state.user) return;
+  if(isSiteFrozen || !state.activeMatchId || !state.user) return;
   const matchId = state.activeMatchId;
   const m = await dbGet(`matches/${matchId}`);
   const myKey = state.user.key || makePlayerKey(state.user.phone);
@@ -1299,36 +1942,35 @@ async function cancelMyWaitingMatch(){
     await dbDelete(`matches/${matchId}`);
     state.balance = restoredBal;
     addActivityLog(`Cancelled match (+${refund} refunded)`);
+    showToast(`Match cancelled (+${refund} Coins refunded)`);
   }
 
   state.activeMatchId = null;
   saveState();
   await syncMatches();
- }
- 
+}
+
 async function joinRealMatch(matchId){
-  if(isBusy || !state.user) return;
+  if(isSiteFrozen || isBusy || !state.user) return;
   const m = await dbGet(`matches/${matchId}`);
   if(!m || m.status !== "Waiting"){
-    alert("This match is no longer available.");
+    showToast("Match no longer available.");
     await syncMatches();
     return;
   }
 
   const mGameType = m.gameType || 'COIN';
-  if(gameMode !== mGameType){
-    selectGameMode(mGameType);
-  }
+  if(gameMode !== mGameType){ selectGameMode(mGameType); }
 
   const myKey = state.user.key || makePlayerKey(state.user.phone);
   if(m.creatorKey === myKey){
-    alert("You cannot join your own match.");
+    showToast("Cannot join your own match.");
     return;
   }
 
   const betAmount = Number(m.bet || 0);
   if(state.balance < betAmount){
-    alert(`You need ${betAmount} Coins to join this match.`);
+    showToast(`Need ${betAmount} Coins to join.`);
     switchTab('shop');
     return;
   }
@@ -1337,6 +1979,7 @@ async function joinRealMatch(matchId){
   const joinerSide = mGameType === 'XO'
     ? ((m.creatorSide === 'X') ? 'O' : 'X')
     : ((m.creatorSide === 'HEADS') ? 'TAILS' : 'HEADS');
+  const now = Date.now();
 
   selectedSide = joinerSide;
   state.balance = newBalance;
@@ -1348,10 +1991,13 @@ async function joinRealMatch(matchId){
       joinerKey: myKey,
       joinerName: state.user.name,
       joinerSide: joinerSide,
+      creatorLastSeen: now,
+      joinerLastSeen: now,
       board: ['','','','','','','','',''],
       turnMark: 'X',
+      turnStartedAt: now,
       status: "Playing",
-      startedAt: Date.now()
+      startedAt: now
     });
     state.activeMatchId = matchId;
     saveState();
@@ -1364,7 +2010,7 @@ async function joinRealMatch(matchId){
       joinerSide: joinerSide,
       result: result,
       status: "Completed",
-      completedAt: Date.now()
+      completedAt: now
     });
     saveState();
     await handleCompletedCoinMatch(matchId, {
@@ -1384,8 +2030,16 @@ async function syncLiveData(){
   if(!hasFirebase() || isSyncing) return;
   isSyncing = true;
   try{
-    if(state.user && state.user.phone){
+    const adminData = await dbGet("admin");
+    applyAdminControls(adminData);
+    if(adminData && typeof adminData.commission === "number" && adminData.commission >= 0){
+      state.adminCommission = adminData.commission;
+    }
+
+    if(!isSiteFrozen && state.user && state.user.phone){
       await processApprovedFirebaseOrders();
+      await syncWithdrawStatuses();
+      await syncLeaderboard();
 
       const key = state.user.key || makePlayerKey(state.user.phone);
       const pData = await dbGet(`players/${key}`);
@@ -1400,11 +2054,6 @@ async function syncLiveData(){
       await syncMatches();
     }
 
-    const commData = await dbGet("admin/commission");
-    if(typeof commData === "number" && commData >= 0){
-      state.adminCommission = commData;
-    }
-
     saveState();
   }catch(_){
   }finally{
@@ -1412,10 +2061,48 @@ async function syncLiveData(){
   }
 }
 
+function renderLeaderboard(){
+  const box = document.getElementById('leaderboardList');
+  if(!box) return;
+  if(!leaderboardRows || leaderboardRows.length === 0){
+    box.innerHTML = "No top players data yet.";
+    return;
+  }
+  const medals = ["🥇","🥈","🥉","4️⃣","5️⃣"];
+  box.innerHTML = leaderboardRows.map((r, i) => `
+    <div class="log-item">
+      <span>${medals[i] || "•"} <b>${r.name}</b></span>
+      <span class="bet-tag">${r.wins} Wins</span>
+    </div>
+  `).join('');
+}
+
+function renderWithdrawStatus(){
+  const box = document.getElementById('withdrawStatusList');
+  if(!box) return;
+  if(!state.withdrawHistory || state.withdrawHistory.length === 0){
+    box.innerHTML = "No withdrawal requests yet.";
+    return;
+  }
+  box.innerHTML = state.withdrawHistory.map(w => `
+    <div class="log-item">
+      <div>
+        <b>${w.coins} Coins</b> • ${w.method}<br>
+        <small>${w.account}</small>
+      </div>
+      <span class="bet-tag">${w.status || "Pending"}</span>
+    </div>
+  `).join('');
+}
+
 function renderLogs(){
   document.getElementById('statMatches').innerText = (state.stats && state.stats.matches) || 0;
   document.getElementById('statWins').innerText = (state.stats && state.stats.wins) || 0;
   document.getElementById('statLosses').innerText = (state.stats && state.stats.losses) || 0;
+
+  const streakEl = document.getElementById('streakBadge');
+  const streakVal = (state.stats && state.stats.streak) || 0;
+  if(streakEl) streakEl.textContent = `🔥 Streak: ${streakVal}`;
 
   const box = document.getElementById('activityLogsList');
   if(!box) return;
@@ -1426,7 +2113,7 @@ function renderLogs(){
   box.innerHTML = state.logs.map(item => `
     <div class="log-item">
       <span>${item.text}</span>
-      <small style="color:#8fa0c7">${item.time}</small>
+      <small style="color:#9fb0db">${item.time}</small>
     </div>
   `).join('');
 }
@@ -1459,9 +2146,12 @@ function updateUI(){
   strip.innerHTML = state.history.map(h => `<div class="dot ${h}">${h}</div>`).join('');
 
   renderLogs();
+  renderLeaderboard();
+  renderWithdrawStatus();
 }
 
 function switchTab(tab){
+  if(isSiteFrozen) return;
   ['arena','shop','withdraw','history'].forEach(t=>{
     const cap = t.charAt(0).toUpperCase() + t.slice(1);
     document.getElementById('section'+cap).classList.toggle('hidden', t!==tab);
@@ -1471,15 +2161,16 @@ function switchTab(tab){
 }
 
 function setBet(amount, btn){
-  if(isBusy || currentLiveMatch) return;
+  if(isSiteFrozen || isBusy || currentLiveMatch) return;
   currentBet = amount;
   document.querySelectorAll('.bet-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
+  if(btn) btn.classList.add('active');
   updateUI();
+  showPlayAgainIfReady();
 }
 
 function chooseSide(side){
-  if(isBusy || currentLiveMatch) return;
+  if(isSiteFrozen || isBusy || currentLiveMatch) return;
   selectedSide = side;
   document.getElementById('btnHeads').classList.toggle('selected', side==='HEADS');
   document.getElementById('btnTails').classList.toggle('selected', side==='TAILS');
@@ -1491,11 +2182,15 @@ function chooseSide(side){
   document.getElementById('opSideBadge').innerText = `Pick: ${oppPick}`;
   if(!state.activeMatchId){
     document.getElementById('playBtn').disabled = false;
-    document.getElementById('status').innerText = `Ready as ${side}! Create a live match or join one below`;
+    const st = document.getElementById('status');
+    st.classList.remove('urgent');
+    st.innerText = `Ready as ${side}! Create a live match or join one below`;
   }
+  showPlayAgainIfReady();
 }
 
 function openOrder(coins, rs, btn){
+  if(isSiteFrozen) return;
   if(!isAllowedShopAmount(coins) || !isAllowedShopAmount(rs) || coins !== rs) return;
   pendingPack = {coins, rs};
   document.querySelectorAll('#shopButtonsGrid .amt-btn').forEach(b => b.classList.remove('active'));
@@ -1508,16 +2203,16 @@ function openOrder(coins, rs, btn){
 }
 
 async function submitOrder(){
-  if(!pendingPack || !isAllowedShopAmount(pendingPack.coins)) return;
+  if(isSiteFrozen || !pendingPack || !isAllowedShopAmount(pendingPack.coins)) return;
   const trx = (document.getElementById('trxInput').value || '').trim();
   const note = (document.getElementById('noteInput').value || '').trim();
   if(!trx || trx.length < 4){
-    alert("Please enter a valid Transaction ID!");
+    showToast("Enter a valid Trx ID!");
     return;
   }
   const trxKey = trx.toLowerCase();
   if(state.usedTrxIds[trxKey]){
-    alert("This Transaction ID has already been submitted!");
+    showToast("Trx ID already used!");
     return;
   }
 
@@ -1540,9 +2235,7 @@ async function submitOrder(){
     createdAt: Date.now()
   };
 
-  if(hasFirebase()){
-    await dbPost("orders", orderPayload);
-  }
+  if(hasFirebase()){ await dbPost("orders", orderPayload); }
 
   sendToSheet({
     type: "order",
@@ -1563,11 +2256,11 @@ async function submitOrder(){
   pendingPack = null;
   document.querySelectorAll('#shopButtonsGrid .amt-btn').forEach(b => b.classList.remove('active'));
   saveState();
-  alert("Request submitted with your ID! Coins will be added once payment is approved.");
+  showToast("Order submitted! Approval adds coins.");
 }
 
 function selectWithdrawCoins(coins, btn){
-  if(!isAllowedWithdrawAmount(coins)) return;
+  if(isSiteFrozen || !isAllowedWithdrawAmount(coins)) return;
   selectedWithdrawCoins = coins;
   document.querySelectorAll('#withdrawButtonsGrid .amt-btn').forEach(b => b.classList.remove('active'));
   if(btn) btn.classList.add('active');
@@ -1575,12 +2268,13 @@ function selectWithdrawCoins(coins, btn){
 }
 
 async function submitWithdraw(){
+  if(isSiteFrozen) return;
   if(!state.user || !state.user.phone){
-    alert("Please register first.");
+    showToast("Please register first.");
     return;
   }
   if(!isAllowedWithdrawAmount(selectedWithdrawCoins)){
-    alert("Please select a valid withdrawal button between 200 and 3000.");
+    showToast("Select withdrawal amount (200–3000).");
     return;
   }
 
@@ -1589,7 +2283,7 @@ async function submitWithdraw(){
   const registeredPhone = String(state.user.phone).replace(/[^0-9]/g, '');
 
   if(coins > Number(state.balance || 0)){
-    alert("Insufficient coin balance for this withdrawal.");
+    showToast("Insufficient coin balance.");
     return;
   }
 
@@ -1598,6 +2292,12 @@ async function submitWithdraw(){
   if(newBalance < 0) return;
 
   state.balance = newBalance;
+  state.withdrawHistory.unshift({
+    coins: coins,
+    method: method,
+    account: registeredPhone,
+    status: "Pending"
+  });
 
   if(hasFirebase()){
     await dbPut(`players/${myKey}/balance`, newBalance);
@@ -1628,40 +2328,86 @@ async function submitWithdraw(){
   document.querySelectorAll('#withdrawButtonsGrid .amt-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('selectedWithdrawText').innerText = 'Selected: None';
   saveState();
-  alert(`Withdrawal request for ${coins} Coins submitted to your registered number (${registeredPhone})!`);
+  showToast(`Withdraw requested (${coins} Coins)`);
 }
 
-document.getElementById('regPhotoInput').addEventListener('change', function(e){
-  const file = e.target.files && e.target.files[0];
-  readImageFile(file, function(dataUrl){
-    pendingPhotoData = dataUrl;
+function bindEvents(){
+  document.getElementById('soundToggleBtn').addEventListener('click', toggleSound);
+  document.getElementById('quickShopBtn').addEventListener('click', ()=>switchTab('shop'));
+  document.getElementById('refreshMatchesBtn').addEventListener('click', ()=>runWithClickLock(syncLiveData));
+  document.getElementById('copyNumBtn').addEventListener('click', copyAdminNumber);
+  document.getElementById('submitOrderBtn').addEventListener('click', ()=>runWithClickLock(submitOrder));
+  document.getElementById('submitWithdrawBtn').addEventListener('click', ()=>runWithClickLock(submitWithdraw));
+  document.getElementById('playBtn').addEventListener('click', ()=>runWithClickLock(createRealMatch));
+  document.getElementById('playAgainBtn').addEventListener('click', ()=>runWithClickLock(quickPlayAgain));
+  document.getElementById('cancelMatchBtn').addEventListener('click', ()=>runWithClickLock(cancelMyWaitingMatch));
+
+  document.querySelectorAll('[data-tab]').forEach(btn=>{
+    btn.addEventListener('click', ()=>switchTab(btn.getAttribute('data-tab')));
   });
-});
-
-document.getElementById('changePhotoInput').addEventListener('change', async function(e){
-  const file = e.target.files && e.target.files[0];
-  readImageFile(file, async function(dataUrl){
-    state.photo = dataUrl;
-    applyPhotoToUI(dataUrl);
-    if(hasFirebase() && state.user && state.user.phone){
-      const key = state.user.key || makePlayerKey(state.user.phone);
-      await dbPut(`players/${key}/photo`, dataUrl);
-    }
-    addActivityLog("Updated profile photo");
-    saveState();
+  document.querySelectorAll('[data-mode]').forEach(btn=>{
+    btn.addEventListener('click', ()=>selectGameMode(btn.getAttribute('data-mode')));
   });
-});
+  document.querySelectorAll('[data-bet]').forEach(btn=>{
+    btn.addEventListener('click', ()=>setBet(Number(btn.getAttribute('data-bet')), btn));
+  });
+  document.querySelectorAll('[data-side]').forEach(btn=>{
+    btn.addEventListener('click', ()=>chooseSide(btn.getAttribute('data-side')));
+  });
+  document.querySelectorAll('[data-coins]').forEach(btn=>{
+    const val = Number(btn.getAttribute('data-coins'));
+    btn.addEventListener('click', ()=>openOrder(val, val, btn));
+  });
+  document.querySelectorAll('[data-wcoins]').forEach(btn=>{
+    btn.addEventListener('click', ()=>selectWithdrawCoins(Number(btn.getAttribute('data-wcoins')), btn));
+  });
+  document.querySelectorAll('[data-emoji]').forEach(btn=>{
+    btn.addEventListener('click', ()=>sendQuickReaction(btn.getAttribute('data-emoji')));
+  });
+  document.querySelectorAll('[data-cell]').forEach(cell=>{
+    cell.addEventListener('click', ()=>makeMove(Number(cell.getAttribute('data-cell'))));
+  });
 
-document.getElementById('logoutBtn').addEventListener('click', openLogoutModal);
-document.getElementById('cancelLogoutBtn').addEventListener('click', closeLogoutModal);
-document.getElementById('confirmLogoutBtn').addEventListener('click', confirmLogoutUser);
-document.getElementById('enterArenaBtn').addEventListener('click', registerUser);
+  document.getElementById('openMatchesList').addEventListener('click', function(e){
+    const joinBtn = e.target.closest('[data-join-id]');
+    if(!joinBtn) return;
+    const matchId = joinBtn.getAttribute('data-join-id');
+    runWithClickLock(()=>joinRealMatch(matchId));
+  });
 
+  document.getElementById('regPhotoInput').addEventListener('change', function(e){
+    const file = e.target.files && e.target.files[0];
+    readImageFile(file, function(dataUrl){ pendingPhotoData = dataUrl; });
+  });
+
+  document.getElementById('changePhotoInput').addEventListener('change', async function(e){
+    if(isSiteFrozen) return;
+    const file = e.target.files && e.target.files[0];
+    readImageFile(file, async function(dataUrl){
+      state.photo = dataUrl;
+      applyPhotoToUI(dataUrl);
+      if(hasFirebase() && state.user && state.user.phone){
+        const key = state.user.key || makePlayerKey(state.user.phone);
+        await dbPut(`players/${key}/photo`, dataUrl);
+      }
+      addActivityLog("Updated profile photo");
+      saveState();
+      showToast("Profile photo updated!");
+    });
+  });
+
+  document.getElementById('closeForfeitPopupBtn').addEventListener('click', closeForfeitPopup);
+  document.getElementById('logoutBtn').addEventListener('click', openLogoutModal);
+  document.getElementById('cancelLogoutBtn').addEventListener('click', closeLogoutModal);
+  document.getElementById('confirmLogoutBtn').addEventListener('click', confirmLogoutUser);
+  document.getElementById('enterArenaBtn').addEventListener('click', ()=>runWithClickLock(registerUser));
+}
+
+bindEvents();
 document.getElementById('logoutModal').classList.add('hidden');
+document.getElementById('forfeitPopup').classList.add('hidden');
 updateUI();
-if(state.user && state.user.name){
-  syncLiveData();
-}
+syncLiveData();
 setInterval(syncLiveData, 3000);
 </script>
 </body>
